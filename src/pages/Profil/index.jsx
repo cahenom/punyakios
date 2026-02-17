@@ -36,6 +36,7 @@ import messaging from '@react-native-firebase/messaging';
 import {PermissionsAndroid, Platform} from 'react-native';
 import RNBiometrics from 'react-native-biometrics';
 import {setBiometricEnabledStatus} from '../../utils/biometricUtils';
+import {version as appVersion} from '../../../package.json';
 
 export default function ProfilScreen({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -757,7 +758,7 @@ export default function ProfilScreen({navigation}) {
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Log Out</Text>
         </TouchableOpacity>
-        <Text style={styles.versionText}>Version 2.1.0</Text>
+        <Text style={styles.versionText}>Version {appVersion}</Text>
       </View>
       </ScrollView>
     </SafeAreaView>

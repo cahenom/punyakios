@@ -1,6 +1,6 @@
 {
-  "name": "punyakios",
-  "version": "4.0.1",
+  "name": "Punya Kios",
+  "version": "4.2.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
