@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pulsa Purchase Exclusive</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap"
+      rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#135bec',
+              'background-light': '#f6f6f8',
+              'background-dark': '#101622',
+            },
+            fontFamily: {
+              display: ['Manrope', 'sans-serif'],
+            },
+            borderRadius: {
+              DEFAULT: '0.25rem',
+              lg: '0.5rem',
+              xl: '0.75rem',
+              full: '9999px',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-[#1F2937] dark:text-white font-display overflow-hidden h-screen flex flex-col">
+    <header
+      class="sticky top-0 z-50 flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between border-b border-gray-200 dark:border-gray-800">
+      <button
+        class="text-[#0d121b] dark:text-white flex size-12 shrink-0 items-center justify-center rounded-full active:bg-gray-200 dark:active:bg-gray-800 transition-colors">
+        <span class="material-symbols-outlined" style="font-size: 24px"
+          >arrow_back</span
+        >
+      </button>
+      <h2
+        class="text-[#0d121b] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">
+        Pulsa
+      </h2>
+    </header>
+    <main class="flex-1 overflow-y-auto no-scrollbar pb-24">
+      <div class="px-4 py-4 bg-white dark:bg-[#1A2230] mb-2 shadow-sm">
+        <label class="flex flex-col w-full">
+          <p
+            class="text-[#0d121b] dark:text-gray-300 text-sm font-semibold leading-normal pb-2">
+            Phone Number
+          </p>
+          <div class="flex w-full items-stretch rounded-lg relative group">
+            <div
+              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div
+                class="w-6 h-6 rounded-full bg-red-600 flex items-center justify-center text-white text-[8px] font-bold">
+                Tsel
+              </div>
+            </div>
+            <input
+              class="form-input flex w-full resize-none overflow-hidden rounded-lg text-[#0d121b] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#cfd7e7] dark:border-gray-700 bg-background-light dark:bg-background-dark focus:border-primary h-14 placeholder:text-[#9ca3af] pl-11 pr-12 text-lg font-medium leading-normal transition-all"
+              placeholder="08xx-xxxx-xxxx"
+              type="tel"
+              value="0812 3456 7890" />
+            <button
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-primary cursor-pointer hover:text-blue-700">
+              <span class="material-symbols-outlined" style="font-size: 24px"
+                >contacts</span
+              >
+            </button>
+          </div>
+        </label>
+        <div class="mt-4">
+          <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">
+            Recent Transactions
+          </p>
+          <div class="flex gap-4 overflow-x-auto no-scrollbar pb-1">
+            <div
+              class="flex flex-col items-center gap-1 shrink-0 cursor-pointer group">
+              <div class="relative">
+                <div
+                  class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors">
+                  <span
+                    class="text-xs font-bold text-gray-600 dark:text-gray-300"
+                    >Mom</span
+                  >
+                </div>
+                <div
+                  class="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full w-4 h-4 flex items-center justify-center border border-white dark:border-gray-800">
+                  <span class="text-[8px] font-bold text-black">IM3</span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col items-center gap-1 shrink-0 cursor-pointer group">
+              <div class="relative">
+                <div
+                  class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors"
+                  style="
+                    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuArfwI268AjfpY3IVgj2ZzYnGKf9oaEAsTdCyD1jy9j8PR8FCy3GFNP8ZNIuLRIjjGuSKvyMW3jdYhmos3n6FrymbJj0H1xh_mOllnNr55yi6umqetwq4WttPj-Qr1ASpQxTAQ6ZoGkzL4w8LoXCdp5DLIBrGXaXnHmQff0_d0kuOPe_y70r6P2dxX5MddkqmPvfhxuIaoezIA7G226mpOQk0jDleqXIjzOPz-JgbmfQfLMUlIOSRKYAUGFM36Oz5hEYbtB-5Pyx2_m');
+                    background-size: cover;
+                  "></div>
+                <div
+                  class="absolute -bottom-1 -right-1 bg-red-600 rounded-full w-4 h-4 flex items-center justify-center border border-white dark:border-gray-800">
+                  <span class="text-[8px] font-bold text-white">T</span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col items-center gap-1 shrink-0 cursor-pointer group">
+              <div class="relative">
+                <div
+                  class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors">
+                  <span
+                    class="text-xs font-bold text-gray-600 dark:text-gray-300"
+                    >Work</span
+                  >
+                </div>
+                <div
+                  class="absolute -bottom-1 -right-1 bg-blue-500 rounded-full w-4 h-4 flex items-center justify-center border border-white dark:border-gray-800">
+                  <span class="text-[8px] font-bold text-white">XL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-4 pt-4 pb-2">
+        <h3 class="text-sm font-bold text-[#0d121b] dark:text-white">
+          Choose Denomination
+        </h3>
+      </div>
+      <div class="p-4 grid grid-cols-2 gap-3 pb-8">
+        <div
+          class="relative flex flex-col justify-between p-4 rounded-xl border-2 border-primary bg-primary/5 dark:bg-primary/10 cursor-pointer shadow-sm transition-all">
+          <div class="absolute top-2 right-2 text-primary">
+            <span
+              class="material-symbols-outlined filled"
+              style="font-size: 20px; font-variation-settings: 'FILL' 1"
+              >check_circle</span
+            >
+          </div>
+          <div>
+            <h3 class="text-xl font-extrabold text-[#0d121b] dark:text-white">
+              10.000
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Active +15 Days
+            </p>
+          </div>
+          <div class="mt-4">
+            <p class="text-sm font-bold text-primary">Rp 11.500</p>
+            <p class="text-[10px] text-gray-400 line-through">Rp 12.000</p>
+          </div>
+        </div>
+        <div
+          class="relative flex flex-col justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1A2230] hover:border-primary/50 cursor-pointer shadow-sm transition-all group">
+          <div
+            class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">
+            Promo
+          </div>
+          <div>
+            <h3
+              class="text-xl font-extrabold text-[#0d121b] dark:text-white group-hover:text-primary transition-colors">
+              20.000
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Active +30 Days
+            </p>
+          </div>
+          <div class="mt-4">
+            <p class="text-sm font-bold text-primary">Rp 19.900</p>
+            <p class="text-[10px] text-gray-400 line-through">Rp 21.000</p>
+          </div>
+        </div>
+        <div
+          class="relative flex flex-col justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1A2230] hover:border-primary/50 cursor-pointer shadow-sm transition-all group">
+          <div>
+            <h3
+              class="text-xl font-extrabold text-[#0d121b] dark:text-white group-hover:text-primary transition-colors">
+              50.000
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Active +45 Days
+            </p>
+          </div>
+          <div class="mt-4">
+            <p
+              class="text-sm font-bold text-[#0d121b] dark:text-white group-hover:text-primary">
+              Rp 50.500
+            </p>
+          </div>
+        </div>
+        <div
+          class="relative flex flex-col justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1A2230] hover:border-primary/50 cursor-pointer shadow-sm transition-all group">
+          <div>
+            <h3
+              class="text-xl font-extrabold text-[#0d121b] dark:text-white group-hover:text-primary transition-colors">
+              100.000
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Active +60 Days
+            </p>
+          </div>
+          <div class="mt-4">
+            <p
+              class="text-sm font-bold text-[#0d121b] dark:text-white group-hover:text-primary">
+              Rp 99.500
+            </p>
+          </div>
+        </div>
+        <div
+          class="relative flex flex-col justify-between p-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 cursor-not-allowed opacity-70 grayscale">
+          <div>
+            <h3 class="text-xl font-extrabold text-gray-400 dark:text-gray-500">
+              150.000
+            </h3>
+            <p class="text-xs text-gray-400 mt-1">Currently Unavailable</p>
+          </div>
+          <div class="mt-4">
+            <p class="text-sm font-bold text-gray-400">Rp 149.000</p>
+          </div>
+        </div>
+        <div
+          class="relative flex flex-col justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1A2230] hover:border-primary/50 cursor-pointer shadow-sm transition-all group">
+          <div
+            class="absolute -top-2 -right-2 bg-green-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">
+            Best Value
+          </div>
+          <div>
+            <h3
+              class="text-xl font-extrabold text-[#0d121b] dark:text-white group-hover:text-primary transition-colors">
+              200.000
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Active +90 Days
+            </p>
+          </div>
+          <div class="mt-4">
+            <p
+              class="text-sm font-bold text-[#0d121b] dark:text-white group-hover:text-primary">
+              Rp 198.000
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div
+      class="fixed bottom-0 left-0 w-full bg-white dark:bg-[#1A2230] border-t border-gray-200 dark:border-gray-800 p-4 pb-6 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex flex-col">
+          <span class="text-xs text-gray-500 dark:text-gray-400"
+            >Total Payment</span
+          >
+          <span class="text-xl font-bold text-[#0d121b] dark:text-white"
+            >Rp 11.500</span
+          >
+        </div>
+        <div class="flex items-center gap-1 cursor-pointer">
+          <span class="text-xs font-medium text-primary">Details</span>
+          <span
+            class="material-symbols-outlined text-primary"
+            style="font-size: 16px"
+            >keyboard_arrow_up</span
+          >
+        </div>
+      </div>
+      <button
+        class="w-full h-12 bg-primary hover:bg-blue-700 active:scale-[0.98] transition-all text-white font-bold rounded-lg shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2">
+        <span>Continue</span>
+        <span class="material-symbols-outlined" style="font-size: 20px"
+          >arrow_forward</span
+        >
+      </button>
+    </div>
+  </body>
+</html>
