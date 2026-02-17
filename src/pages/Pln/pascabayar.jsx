@@ -45,6 +45,7 @@ export default function PLNPascabayar() {
   const [selectItem, setSelectItem] = useState(null);
   const [billData, setBillData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleCekTagihan = async () => {
     if (!customer_no.trim()) {
@@ -84,6 +85,7 @@ export default function PLNPascabayar() {
     console.log('[PLN PASCA DEBUG] Initiating handleBayarTagihan');
     console.log('[PLN PASCA DEBUG] billData passed:', JSON.stringify(billData, null, 2));
 
+    setIsProcessing(true);
     try {
       const response = await makeBayarTagihanCall({
         sku: 'plnpascabayar',
@@ -117,6 +119,8 @@ export default function PLNPascabayar() {
       if (error.message !== 'Biometric authentication failed') {
         // Error will be handled by global interceptor
       }
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -147,66 +151,67 @@ export default function PLNPascabayar() {
             />
           </View>
         </View>
-
-        {billData && (
-          <View style={styles.infoPelanggan(isDarkMode)}>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Ref ID</Text>
-              <Text style={styles.value(isDarkMode)}>{billData.ref_id}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Nama Pelanggan</Text>
-              <Text style={styles.value(isDarkMode)}>{billData.customer_name}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
-              <Text style={styles.value(isDarkMode)}>{billData.customer_no}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Periode</Text>
-              <Text style={styles.value(isDarkMode)}>{billData.periode}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Tarif / Daya</Text>
-              <Text style={styles.value(isDarkMode)}>{billData.desc ? `${billData.desc.tarif} / ${billData.desc.daya} VA` : '-'}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Lembar Tagihan</Text>
-              <Text style={styles.value(isDarkMode)}>{billData.desc ? `${billData.desc.lembar_tagihan} lbr` : '-'}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Tagihan Pokok</Text>
-              <Text style={styles.value(isDarkMode)}>Rp. {(billData.price || 0).toLocaleString('id-ID')}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Harga Jual</Text>
-              <Text style={styles.value(isDarkMode)}>Rp. {(billData.selling_price || 0).toLocaleString('id-ID')}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Admin</Text>
-              <Text style={styles.value(isDarkMode)}>Rp. {(billData.admin || 0).toLocaleString('id-ID')}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Status</Text>
-              <Text style={styles.value(isDarkMode)}>{billData.status}</Text>
-            </View>
-            <View style={styles.contentBlock(isDarkMode)}>
-              <Text style={styles.label(isDarkMode)}>Pesan</Text>
-              <Text style={styles.value(isDarkMode)}>{billData.message}</Text>
-            </View>
-          </View>
-        )}
       </View>
 
-      {billData && (
-        <View style={styles.bottomInline(isDarkMode)}>
-          <ModernButton
-            label="Bayar Tagihan"
-            onPress={() => handleBayarTagihan(billData)}
-            loading={isProcessing}
-          />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 20}}>
+        <View style={{marginHorizontal: HORIZONTAL_MARGIN}}>
+
+          {billData && (
+            <View style={styles.infoPelanggan(isDarkMode)}>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Ref ID</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.ref_id}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Nama Pelanggan</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.customer_name}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.customer_no}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Periode</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.periode}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Tarif / Daya</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.desc ? `${billData.desc.tarif} / ${billData.desc.daya} VA` : '-'}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Lembar Tagihan</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.desc ? `${billData.desc.lembar_tagihan} lbr` : '-'}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Harga Jual</Text>
+                <Text style={styles.value(isDarkMode)}>Rp. {(billData.selling_price || 0).toLocaleString('id-ID')}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Admin</Text>
+                <Text style={styles.value(isDarkMode)}>Rp. {(billData.admin || 0).toLocaleString('id-ID')}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Status</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.status}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Pesan</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.message}</Text>
+              </View>
+            </View>
+          )}
         </View>
-      )}
+
+        {billData && (
+          <View style={styles.bottomInline(isDarkMode)}>
+            <ModernButton
+              label="Bayar Tagihan"
+              onPress={() => handleBayarTagihan(billData)}
+              isLoading={isProcessing}
+            />
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -250,12 +255,12 @@ const styles = StyleSheet.create({
   label: isDarkMode => ({
     fontFamily: MEDIUM_FONT,
     fontSize: FONT_SEDANG,
-    color: isDarkMode ? LIGHT_COLOR : DARK_COLOR, // Changed to ensure contrast
+    color: isDarkMode ? '#FFFFFF' : '#000000',
   }),
   value: isDarkMode => ({
     fontFamily: REGULAR_FONT,
     fontSize: FONT_NORMAL,
-    color: isDarkMode ? LIGHT_COLOR : DARK_COLOR, // Changed to ensure contrast
+    color: isDarkMode ? '#FFFFFF' : '#000000',
   }),
   billingDetail: isDarkMode => ({
     marginTop: 15,
@@ -266,7 +271,7 @@ const styles = StyleSheet.create({
   sectionTitle: isDarkMode => ({
     fontFamily: MEDIUM_FONT,
     fontSize: FONT_SEDANG,
-    color: isDarkMode ? LIGHT_COLOR : DARK_COLOR, // Changed to ensure contrast
+    color: isDarkMode ? '#FFFFFF' : '#000000',
     marginBottom: 10,
   }),
   detailRow: {
@@ -281,13 +286,13 @@ const styles = StyleSheet.create({
   detailLabel: isDarkMode => ({
     fontFamily: REGULAR_FONT,
     fontSize: FONT_KECIL,
-    color: isDarkMode ? LIGHT_COLOR : DARK_COLOR, // Changed to ensure contrast
+    color: isDarkMode ? '#FFFFFF' : '#000000',
     opacity: 0.7,
   }),
   detailValue: isDarkMode => ({
     fontFamily: REGULAR_FONT,
     fontSize: FONT_KECIL,
-    color: isDarkMode ? LIGHT_COLOR : DARK_COLOR, // Changed to ensure contrast
+    color: isDarkMode ? '#FFFFFF' : '#000000',
   }),
 
   bottomInline: isDarkMode => ({
