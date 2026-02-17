@@ -1,4 +1,4 @@
-package com.punyakios
+package com.saldoplus.plus
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

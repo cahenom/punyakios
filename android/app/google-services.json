@@ -7,44 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:538126065836:android:33f0fdc58ae5512336ff09",
-        "android_client_info": {
-          "package_name": "com.punya_kios"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCkVYuurbpSC1ZD4mPr6WpcRhn13_Ab2sE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:538126065836:android:4012fed34e67fbb436ff09",
-        "android_client_info": {
-          "package_name": "com.punyakios"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCkVYuurbpSC1ZD4mPr6WpcRhn13_Ab2sE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:538126065836:android:3e96ea6ca511d66036ff09",
         "android_client_info": {
           "package_name": "com.saldoplus.plus"

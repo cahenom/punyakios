@@ -131,7 +131,7 @@ function App() {
   }, []);
 
   const linking = {
-    prefixes: ['punyakios://'],
+    prefixes: ['saldoplus://'],
     config: {
       screens: {
         ProtectedRoute: {

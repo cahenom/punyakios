@@ -1,4 +1,4 @@
-package com.punyakios
+package com.saldoplus.plus
 
 import android.app.Application
 import com.facebook.react.PackageList

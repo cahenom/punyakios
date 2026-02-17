@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">punya kios</string>
+    <string name="app_name">Punya Kios</string>
     <string name="default_notification_channel_id">transactions</string>
 </resources>
