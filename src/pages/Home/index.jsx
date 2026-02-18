@@ -294,7 +294,8 @@ export default function HomeScreen({navigation}) {
 
         {/* ===== SERVICES GRID ===== */}
         <View style={styles.servicesCard(isDarkMode)}>
-          <View style={styles.servicesGrid}>
+          <View style={styles.servicesCardInner}>
+            <View style={styles.servicesGrid}>
             {visibleServices.map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -321,6 +322,7 @@ export default function HomeScreen({navigation}) {
                 Lihat{'\n'}Semua
               </Text>
             </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -416,28 +418,30 @@ export default function HomeScreen({navigation}) {
                     })
                   }
                   activeOpacity={0.7}>
-                  <View style={styles.cardHeader}>
-                    <Text style={styles.cardType(isDarkMode)}>
-                      {activity.produk}
-                    </Text>
-                    <View style={[styles.statusBadge, {backgroundColor: statusTheme.bg}]}>
-                      <Text style={[styles.statusText, {color: statusTheme.text}]}>
-                        {activity.status}
+                  <View style={styles.activityCardInner}>
+                    <View style={styles.cardHeader}>
+                      <Text style={styles.cardType(isDarkMode)}>
+                        {activity.produk}
+                      </Text>
+                      <View style={[styles.statusBadge, {backgroundColor: statusTheme.bg}]}>
+                        <Text style={[styles.statusText, {color: statusTheme.text}]}>
+                          {activity.status}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.cardBody}>
+                      <View style={{flex: 1}}>
+                        <Text style={styles.cardTujuan(isDarkMode)} numberOfLines={1}>
+                          {activity.tujuan}
+                        </Text>
+                        <Text style={styles.cardDate(isDarkMode)}>
+                          {formatDate(activity.created_at)} • {formatTime(activity.created_at)}
+                        </Text>
+                      </View>
+                      <Text style={styles.cardPrice(isDarkMode)}>
+                        Rp {(activity.price || 0).toLocaleString('id-ID')}
                       </Text>
                     </View>
-                  </View>
-                  <View style={styles.cardBody}>
-                    <View style={{flex: 1}}>
-                      <Text style={styles.cardTujuan(isDarkMode)} numberOfLines={1}>
-                        {activity.tujuan}
-                      </Text>
-                      <Text style={styles.cardDate(isDarkMode)}>
-                        {formatDate(activity.created_at)} • {formatTime(activity.created_at)}
-                      </Text>
-                    </View>
-                    <Text style={styles.cardPrice(isDarkMode)}>
-                      Rp {(activity.price || 0).toLocaleString('id-ID')}
-                    </Text>
                   </View>
                 </TouchableOpacity>
               );
@@ -544,9 +548,12 @@ const styles = StyleSheet.create({
     marginTop: SPACING.lg,
     backgroundColor: isDarkMode ? '#1a2332' : WHITE_BACKGROUND,
     borderRadius: BORDER_RADIUS.large,
-    padding: SPACING.lg,
-    ...SHADOWS.small,
   }),
+  servicesCardInner: {
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.large,
+    overflow: 'hidden',
+  },
   servicesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -563,6 +570,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: SPACING.xs + 2,
+    overflow: 'hidden',
   },
   serviceIcon: {
     width: 26,
@@ -629,15 +637,14 @@ const styles = StyleSheet.create({
   activityCard: isDarkMode => ({
     backgroundColor: isDarkMode ? '#1e293b' : WHITE_COLOR,
     borderRadius: 16,
-    padding: 16,
     borderWidth: 1,
     borderColor: isDarkMode ? '#334155' : '#f1f5f9',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
   }),
+  activityCardInner: {
+    padding: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

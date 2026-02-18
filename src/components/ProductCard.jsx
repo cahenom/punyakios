@@ -46,26 +46,23 @@ const ProductCard = ({
   return (
     <TouchableOpacity
       style={[
-        styles.container,
+        styles.container(isDarkMode, isSelected),
         style
       ]}
       onPress={() => onSelect && onSelect(product)}
       activeOpacity={0.7}>
       <CardWrapper
         {...cardProps}
-        style={[
-          styles.productWrapper(isDarkMode, isSelected),
-          isSelected && styles.selectedCard,
-        ]}>
+        style={styles.productWrapper(isDarkMode, isSelected)}>
         <View style={styles.contentContainer}>
-          <Text style={styles.productLabel(isDarkMode, isSelected)}>
+          <Text style={styles.productLabel(isDarkMode, isSelected)} numberOfLines={2}>
             {product.name || product.product_name || product.label}
           </Text>
           <Text style={styles.productPrice(isDarkMode, isSelected)}>
             Rp {numberWithCommas(product.price || product.product_seller_price)}
           </Text>
           {product.desc && (
-            <Text style={styles.productDesc(isDarkMode, isSelected)}>
+            <Text style={styles.productDesc(isDarkMode, isSelected)} numberOfLines={2}>
               {product.desc || product.product_desc}
             </Text>
           )}
@@ -84,24 +81,22 @@ const ProductCard = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container: (isDarkMode, isSelected) => ({
     marginBottom: SPACING.xs,
-  },
+    borderRadius: BORDER_RADIUS.large,
+    backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+  }),
   productWrapper: (isDarkMode, isSelected) => ({
     borderWidth: isSelected ? 0 : 1,
     borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
     borderRadius: BORDER_RADIUS.large,
     padding: SPACING.lg,
-    backgroundColor: isSelected 
-      ? 'transparent' 
-      : isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-    minHeight: 100,
+    backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
+    minHeight: 110,
+    justifyContent: 'center',
     position: 'relative',
-    ...(isSelected ? SHADOWS.medium : SHADOWS.small),
+    overflow: 'hidden',
   }),
-  selectedCard: {
-    ...SHADOWS.colored(GRADIENTS.primary[0]),
-  },
   contentContainer: {
     flex: 1,
   },

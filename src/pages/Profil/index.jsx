@@ -527,6 +527,7 @@ export default function ProfilScreen({navigation}) {
       elevation: 2,
       borderWidth: 1,
       borderColor: dividerColor,
+      overflow: 'hidden',
     },
     quickActionText: {
       fontSize: FONT_NORMAL - 4,

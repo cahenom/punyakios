@@ -265,6 +265,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.1,
     shadowRadius: 12,
+    overflow: 'hidden',
   },
   secondaryCard: {
     borderRadius: 20,
@@ -276,6 +277,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     paddingHorizontal: 25,
+    overflow: 'hidden',
   },
   keteranganHeader: {
     flexDirection: 'row',
@@ -409,6 +411,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    overflow: 'hidden',
   },
   actionButtonText: {
     fontSize: 14,

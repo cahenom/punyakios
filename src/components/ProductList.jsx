@@ -32,7 +32,7 @@ export default function ProductList({action, selectItem, data}) {
           : '',
       ]}
       onPress={action}>
-      <Text style={styles.productLabel(isDarkMode)}>{data.label}</Text>
+      <Text style={styles.productLabel(isDarkMode)} numberOfLines={1}>{data.label}</Text>
       <Text style={styles.productPrice(isDarkMode)}>Rp. {data.price}</Text>
       {selectItem === data.id && (
         <CheckProduct
@@ -56,7 +56,8 @@ const styles = StyleSheet.create({
     padding: 15, // Reduced padding to prevent overflow
     width: '100%', // Let parent handle width to prevent cutting
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-    minHeight: 80, // Ensure minimum height to prevent text overlap
+    minHeight: 100,
+    justifyContent: 'center',
   }),
   productLabel: isDarkMode => ({
     fontFamily: MEDIUM_FONT,

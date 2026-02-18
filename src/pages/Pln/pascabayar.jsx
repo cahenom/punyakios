@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
     borderRadius: 10,
+    overflow: 'hidden',
   }),
   contentBlock: isDarkMode => ({
     borderBottomWidth: 1,

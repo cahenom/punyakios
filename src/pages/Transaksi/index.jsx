@@ -271,54 +271,56 @@ const Transaksi = () => {
             });
           }
         }}>
-        <View style={styles.cardHeader}>
-          <View style={styles.typeBadge}>
-            <Text style={[styles.typeBadgeText, {color: isDarkMode ? '#94a3b8' : '#64748b'}]}>
-              {item.produk || 'Transaksi'}
-            </Text>
-          </View>
-          <View
-            style={[
-              styles.statusBadge,
-              {backgroundColor: statusTheme.bg},
-            ]}>
-            <Text style={[styles.statusText, {color: statusTheme.text}]}>
-              {item.status}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.cardBody}>
-          <View style={styles.productInfo}>
-            <Text
+        <View style={styles.transactionCardInner}>
+          <View style={styles.cardHeader}>
+            <View style={styles.typeBadge}>
+              <Text style={[styles.typeBadgeText, {color: isDarkMode ? '#94a3b8' : '#64748b'}]}>
+                {item.produk || 'Transaksi'}
+              </Text>
+            </View>
+            <View
               style={[
-                styles.transactionNumber,
-                {color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR},
+                styles.statusBadge,
+                {backgroundColor: statusTheme.bg},
               ]}>
-              {item.tujuan || '-'}
-            </Text>
-            <Text
-              style={[
-                styles.transactionDate,
-                {color: isDarkMode ? '#94a3b8' : SLATE_COLOR},
-              ]}>
-              {formatDate(item.created_at)} •{' '}
-              {item.created_at
-                ? new Date(item.created_at).toLocaleTimeString('id-ID', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })
-                : '-'}
-            </Text>
+              <Text style={[styles.statusText, {color: statusTheme.text}]}>
+                {item.status}
+              </Text>
+            </View>
           </View>
-          <View style={styles.priceInfo}>
-            <Text
-              style={[
-                styles.transactionAmount,
-                {color: isDarkMode ? WHITE_COLOR : DARK_COLOR},
-              ]}>
-              Rp {item.price.toLocaleString('id-ID')}
-            </Text>
+  
+          <View style={styles.cardBody}>
+            <View style={styles.productInfo}>
+              <Text
+                style={[
+                  styles.transactionNumber,
+                  {color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR},
+                ]}>
+                {item.tujuan || '-'}
+              </Text>
+              <Text
+                style={[
+                  styles.transactionDate,
+                  {color: isDarkMode ? '#94a3b8' : SLATE_COLOR},
+                ]}>
+                {formatDate(item.created_at)} •{' '}
+                {item.created_at
+                  ? new Date(item.created_at).toLocaleTimeString('id-ID', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
+                  : '-'}
+              </Text>
+            </View>
+            <View style={styles.priceInfo}>
+              <Text
+                style={[
+                  styles.transactionAmount,
+                  {color: isDarkMode ? WHITE_COLOR : DARK_COLOR},
+                ]}>
+                Rp {item.price.toLocaleString('id-ID')}
+              </Text>
+            </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -386,14 +388,13 @@ const styles = StyleSheet.create({
   },
   transactionCard: {
     borderRadius: 16,
-    padding: 16,
     borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
     marginBottom: 12,
+  },
+  transactionCardInner: {
+    padding: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
   },
   cardHeader: {
     flexDirection: 'row',
