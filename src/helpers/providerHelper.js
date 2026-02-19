@@ -60,8 +60,31 @@ const backgroundSyncProviders = async (cacheKey, apiEndpoint, dataField) => {
   try {
     const response = await api.post(apiEndpoint);
 
-    if (response.data && response.data.data && response.data.data[dataField]) {
-      const allProducts = response.data.data[dataField];
+    if (response.data && response.data.data) {
+      const data = response.data.data;
+      let allProducts = [];
+      
+      if (Array.isArray(data)) {
+        allProducts = data;
+      } else if (data[dataField]) {
+        allProducts = data[dataField];
+      } else if (data.data && Array.isArray(data.data)) {
+        allProducts = data.data;
+      } else if (Object.keys(data).length > 0) {
+        // Fallback: search for any array property if the specific dataField is not found
+        const firstArrayKey = Object.keys(data).find(key => Array.isArray(data[key]));
+        if (firstArrayKey) {
+          allProducts = data[firstArrayKey];
+        }
+      }
+
+      if (allProducts.length === 0) {
+        return {
+          providers: [],
+          error: `Data tidak ditemukan. (Property ${dataField} tidak ada)`
+        };
+      }
+
       const uniqueProviders = [...new Set(allProducts.map(item => item.provider))];
       const cacheData = {
         providers: uniqueProviders,

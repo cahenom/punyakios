@@ -6,10 +6,13 @@ import {
   useColorScheme,
   FlatList,
   SafeAreaView,
+  Keyboard,
+  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
 import ModernButton from '../../components/ModernButton';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   BLUE_COLOR,
   DARK_BACKGROUND,
@@ -27,19 +30,131 @@ import {
 } from '../../utils/const';
 import Input from '../../components/form/Input';
 import {ArrowRight} from '../../assets';
-import BottomButton from '../../components/BottomButton';
+import {Alert} from '../../utils/alert';
+import {makeCekTagihanCall, makeBayarTagihanCall} from '../../helpers/apiBiometricHelper';
 import BottomModal from '../../components/BottomModal';
-import {product_internet} from '../../data/product_internet';
+import TransactionDetail from '../../components/TransactionDetail';
+import { useNavigation } from '@react-navigation/native';
+import {api} from '../../utils/api';
 
 export default function Internet() {
   const isDarkMode = useColorScheme() === 'dark';
+  const navigation = useNavigation();
   const [customer_no, setCustomerNo] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [provider, setProvider] = useState(null);
+  const [billData, setBillData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showModalConfirm, setShowModalConfirm] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    setLoadingProducts(true);
+    try {
+      const response = await api.post('/api/product/internet');
+      if (response.data.status === 'success') {
+        setProducts(response.data.data.internet || []);
+      }
+    } catch (error) {
+      console.error('Error fetching Internet products:', error?.message || String(error));
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
 
   const handleSetProvider = item => {
     setProvider(item);
     setShowModal(!showModal);
+    if (billData) setBillData(null);
+  };
+
+  const handleCekTagihan = async () => {
+    if (!customer_no.trim()) {
+      Alert.alert('Error', 'Silakan masukkan nomor pelanggan');
+      return;
+    }
+    if (!provider) {
+      Alert.alert('Error', 'Silakan pilih provider internet');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await makeCekTagihanCall({
+        sku: provider.sku,
+        customer_no: customer_no
+      }, `Verifikasi untuk melihat tagihan ${provider.name}`);
+
+      if (response.data) {
+        setBillData(response.data);
+        if (response.status !== 'Sukses' && response.message !== 'tagihan berhasil di cek') {
+          Alert.alert('Info', response.message || 'Gagal mengambil data tagihan');
+        }
+      } else {
+        Alert.alert('Error', response.message || 'Gagal mengambil data tagihan');
+      }
+    } catch (error) {
+      console.error('Error checking Internet bill:', error?.message || String(error));
+      if (error?.message !== 'Biometric authentication failed') {
+        Alert.alert('Error', error?.response?.data?.message || `Gagal menghubungi server: ${error?.message || 'Unknown error'}`);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBayarTagihan = () => {
+    Keyboard.dismiss();
+    console.log('[Internet DEBUG] handleBayarTagihan clicked', !!billData);
+    if (!billData) return;
+    console.log('[Internet DEBUG] Showing transaction modal');
+    setShowModalConfirm(true);
+  };
+
+  const confirmPayment = async (data) => {
+    if (!data || isProcessing) return;
+
+    setIsProcessing(true);
+    try {
+      const response = await makeBayarTagihanCall({
+        sku: provider.sku,
+        customer_no: data.customer_no,
+        ref_id: data.ref_id,
+      }, `Verifikasi untuk membayar tagihan ${provider.name}`);
+
+      setShowModalConfirm(false);
+
+      navigation.navigate('SuccessNotif', {
+        item: {
+          ...response,
+          customer_no: data.customer_no,
+          ref: data.ref_id,
+          tujuan: data.customer_no,
+          sku: provider.sku || 'internet',
+          status: response.status || 'Sukses',
+          message: response.message || 'Transaksi Sukses',
+          price: data.selling_price || data.price,
+          sn: data.ref_id,
+        },
+        product: {
+          product_name: provider.name,
+          name: provider.name,
+          label: provider.name,
+          product_seller_price: `Rp ${(data.selling_price || data.price)?.toLocaleString('id-ID')}`,
+          price: `Rp ${(data.selling_price || data.price)?.toLocaleString('id-ID')}`
+        },
+      });
+    } catch (error) {
+      console.error('Error paying internet bill:', error?.message || String(error));
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -73,60 +188,111 @@ export default function Internet() {
                 color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
                 fontFamily: REGULAR_FONT,
               }}>
-              {provider ? provider?.label : 'Pilih provider'}
+              {provider ? provider?.name : 'Pilih provider'}
             </Text>
           </TouchableOpacity>
-          <ModernButton
-            label="Cek"
-            onPress={() => console.log('Cek Internet')}
-          />
+          <View style={{marginTop: 5}}>
+            <ModernButton
+              label="Cek"
+              onPress={handleCekTagihan}
+              isLoading={loading}
+            />
+          </View>
         </View>
 
-        <View style={styles.infoPelanggan(isDarkMode)}>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Nama</Text>
-            <Text style={styles.value(isDarkMode)}>Lorem Ipsum</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
-            <Text style={styles.value(isDarkMode)}>1234567890</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Jumlah peserta</Text>
-            <Text style={styles.value(isDarkMode)}>2</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Lembar Tagihan</Text>
-            <Text style={styles.value(isDarkMode)}>2 lbr</Text>
-          </View>
-          <View style={styles.contentBlock(isDarkMode)}>
-            <Text style={styles.label(isDarkMode)}>Total Tagihan</Text>
-            <Text style={styles.value(isDarkMode)}>Rp. 120.000</Text>
-          </View>
-        </View>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 20}}>
+          {billData && (
+            <View style={styles.infoPelanggan(isDarkMode)}>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Ref ID</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.ref_id || '-'}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Nama Pelanggan</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.customer_name || billData.nama || '-'}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>ID Pelanggan</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.customer_no}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Provider</Text>
+                <Text style={styles.value(isDarkMode)}>{provider?.name}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Total Tagihan</Text>
+                <Text style={styles.value(isDarkMode)}>Rp. {(billData.selling_price || billData.price || 0).toLocaleString('id-ID')}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Admin</Text>
+                <Text style={styles.value(isDarkMode)}>Rp. {(billData.admin || 0).toLocaleString('id-ID')}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Status</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.status || '-'}</Text>
+              </View>
+              <View style={styles.contentBlock(isDarkMode)}>
+                <Text style={styles.label(isDarkMode)}>Pesan</Text>
+                <Text style={styles.value(isDarkMode)}>{billData.message || '-'}</Text>
+              </View>
+            </View>
+          )}
+
+          {billData && (
+            <View style={{marginTop: 15}}>
+              <ModernButton
+                label="Bayar Tagihan"
+                onPress={handleBayarTagihan}
+                isLoading={isProcessing && !showModalConfirm}
+              />
+            </View>
+          )}
+        </ScrollView>
       </View>
 
-      <BottomButton
-        label="Bayar Tagihan"
-        action={() => console.log('Bayar Internet:', customer_no)}
-        isLoading={false}
-      />
+      {/* Modal moved out of ScrollView */}
+
+      <BottomModal
+        visible={showModalConfirm}
+        onDismis={() => setShowModalConfirm(false)}
+        title="Detail Transaksi">
+        <TransactionDetail
+          destination={billData?.customer_no}
+          product={provider?.name}
+          description={billData?.customer_name || billData?.nama}
+          price={billData?.selling_price || billData?.price}
+          onConfirm={() => confirmPayment(billData)}
+          onCancel={() => setShowModalConfirm(false)}
+          isLoading={isProcessing}
+        />
+      </BottomModal>
 
       <BottomModal
         visible={showModal}
         onDismis={() => setShowModal(!showModal)}
         title="Provider Internet">
-        <View style={{marginTop: 15}}>
+        <View style={{marginTop: 15, maxHeight: 400}}>
           <FlatList
-            data={product_internet}
+            data={products}
+            refreshing={loadingProducts}
+            onRefresh={fetchProducts}
             renderItem={({item}) => (
               <TouchableOpacity
-                key={item.id}
+                key={item.sku}
                 style={styles.layananButton(isDarkMode)}
                 onPress={() => handleSetProvider(item)}>
-                <Text style={styles.textOption(isDarkMode)}>{item.label}</Text>
+                <Text style={styles.textOption(isDarkMode)}>{item.name}</Text>
                 <ArrowRight />
               </TouchableOpacity>
+            )}
+            ListEmptyComponent={() => (
+              <View style={{padding: 20, alignItems: 'center'}}>
+                {loadingProducts ? (
+                  <ActivityIndicator color={BLUE_COLOR} />
+                ) : (
+                  <Text style={{color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}}>No products found</Text>
+                )}
+              </View>
             )}
           />
         </View>
@@ -196,7 +362,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: isDarkMode ? SLATE_COLORE : GREY_COLOR,
+    borderBottomColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
     padding: 10,
     justifyContent: 'space-between',
   }),

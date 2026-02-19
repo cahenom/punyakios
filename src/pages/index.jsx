@@ -24,6 +24,8 @@ import TypeVoucher from './Voucher/typeVoucher';
 import BpjsKesehatan from './Bpjs';
 import PDAM from './Pdam';
 import Internet from './Internet';
+import Streaming from './Streaming';
+import StreamingProduct from './Streaming/streamingProduct';
 import LoginPage from './Auth/login';
 import RegisterPage from './Auth/register';
 import ProfilScreen from './Profil';
@@ -69,6 +71,8 @@ export {
   BpjsKesehatan,
   PDAM,
   Internet,
+  Streaming,
+  StreamingProduct,
   LoginPage,
   RegisterPage,
   ProfilScreen,

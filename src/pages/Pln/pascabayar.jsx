@@ -7,6 +7,7 @@ import {
   ScrollView,
   ActivityIndicator,
   SafeAreaView,
+  Keyboard,
 } from 'react-native';
 import {Alert} from '../../utils/alert';
 import React, {useState} from 'react';
@@ -36,6 +37,8 @@ import {api} from '../../utils/api';
 import { makeCekTagihanCall, makeBayarTagihanCall } from '../../helpers/apiBiometricHelper';
 import CustomHeader from '../../components/CustomHeader';
 import ModernButton from '../../components/ModernButton';
+import BottomModal from '../../components/BottomModal';
+import TransactionDetail from '../../components/TransactionDetail';
 
 export default function PLNPascabayar() {
   const navigation = useNavigation();
@@ -46,6 +49,7 @@ export default function PLNPascabayar() {
   const [billData, setBillData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleCekTagihan = async () => {
     if (!customer_no.trim()) {
@@ -81,44 +85,48 @@ export default function PLNPascabayar() {
     }
   };
 
-  const handleBayarTagihan = async (billData) => {
-    console.log('[PLN PASCA DEBUG] Initiating handleBayarTagihan');
-    console.log('[PLN PASCA DEBUG] billData passed:', JSON.stringify(billData, null, 2));
+  const handleBayarTagihan = (data) => {
+    Keyboard.dismiss();
+    if (!data) return;
+    setShowModal(true);
+  };
+
+  const confirmPayment = async (data) => {
+    if (!data || isProcessing) return;
 
     setIsProcessing(true);
     try {
       const response = await makeBayarTagihanCall({
         sku: 'plnpascabayar',
-        customer_no: billData.customer_no,
-        ref_id: billData.ref_id, // Include the reference ID from the bill data
+        customer_no: data.customer_no,
+        ref_id: data.ref_id,
       }, 'Verifikasi sidik jari atau biometric wajah untuk membayar tagihan PLN');
 
-      // Navigate to success screen with the response data
+      setShowModal(false);
+
+      // Navigate to success screen
       navigation.navigate('SuccessNotif', {
         item: {
           ...response,
-          customer_no: billData.customer_no,
-          ref: billData.ref_id,
-          tujuan: billData.customer_no,
+          customer_no: data.customer_no,
+          ref: data.ref_id,
+          tujuan: data.customer_no,
           sku: 'plnpascabayar',
           status: response.status || 'Sukses',
           message: response.message || 'Transaksi Sukses',
-          price: billData.selling_price || billData.price,
-          sn: billData.ref_id, // Using ref_id as serial number
+          price: data.selling_price || data.price,
+          sn: data.ref_id,
         },
         product: {
           product_name: 'PLN Pascabayar',
           name: 'PLN Pascabayar',
           label: 'PLN Pascabayar',
-          product_seller_price: `Rp ${billData.selling_price?.toLocaleString('id-ID')}`,
-          price: `Rp ${billData.selling_price?.toLocaleString('id-ID')}`
+          product_seller_price: `Rp ${data.selling_price?.toLocaleString('id-ID')}`,
+          price: `Rp ${data.selling_price?.toLocaleString('id-ID')}`
         },
       });
     } catch (error) {
       console.error('Error paying bill:', error);
-      if (error.message !== 'Biometric authentication failed') {
-        // Error will be handled by global interceptor
-      }
     } finally {
       setIsProcessing(false);
     }
@@ -207,11 +215,26 @@ export default function PLNPascabayar() {
             <ModernButton
               label="Bayar Tagihan"
               onPress={() => handleBayarTagihan(billData)}
-              isLoading={isProcessing}
+              isLoading={isProcessing && !showModal}
             />
           </View>
         )}
       </ScrollView>
+
+      <BottomModal
+        visible={showModal}
+        onDismis={() => setShowModal(false)}
+        title="Detail Transaksi">
+        <TransactionDetail
+          destination={billData?.customer_no}
+          product="PLN Pascabayar"
+          description={billData?.customer_name || billData?.nama}
+          price={billData?.selling_price || billData?.price}
+          onConfirm={() => confirmPayment(billData)}
+          onCancel={() => setShowModal(false)}
+          isLoading={isProcessing}
+        />
+      </BottomModal>
     </SafeAreaView>
   );
 }

@@ -4,6 +4,7 @@ import {
   View,
   useColorScheme,
   SafeAreaView,
+  Keyboard,
 } from 'react-native';
 import {Alert} from '../../utils/alert';
 import React, {useState} from 'react';
@@ -25,6 +26,8 @@ import Input from '../../components/form/Input';
 import { makeCekTagihanCall, makeBayarTagihanCall } from '../../helpers/apiBiometricHelper';
 import CustomHeader from '../../components/CustomHeader';
 import ModernButton from '../../components/ModernButton';
+import BottomModal from '../../components/BottomModal';
+import TransactionDetail from '../../components/TransactionDetail';
 
 export default function BpjsKesehatan() {
   const navigation = useNavigation();
@@ -34,6 +37,7 @@ export default function BpjsKesehatan() {
   const [billData, setBillData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleCekTagihan = async () => {
     if (!customer_no.trim()) {
@@ -64,8 +68,16 @@ export default function BpjsKesehatan() {
     }
   };
 
-  const handleBayarTagihan = async (data) => {
+  const handleBayarTagihan = (data) => {
+    Keyboard.dismiss();
+    console.log('[BPJS DEBUG] handleBayarTagihan clicked', !!data);
     if (!data) return;
+    console.log('[BPJS DEBUG] Showing transaction modal');
+    setShowModal(true);
+  };
+
+  const confirmPayment = async (data) => {
+    if (!data || isProcessing) return;
     
     setIsProcessing(true);
     try {
@@ -74,6 +86,8 @@ export default function BpjsKesehatan() {
         customer_no: data.customer_no,
         ref_id: data.ref_id,
       }, 'Verifikasi sidik jari atau biometric wajah untuk membayar tagihan BPJS');
+
+      setShowModal(false);
 
       // Navigate to success screen
       navigation.navigate('SuccessNotif', {
@@ -98,7 +112,6 @@ export default function BpjsKesehatan() {
       });
     } catch (error) {
       console.error('Error paying BPJS bill:', error);
-      // Error will be handled by global interceptor
     } finally {
       setIsProcessing(false);
     }
@@ -171,10 +184,25 @@ export default function BpjsKesehatan() {
           <ModernButton
             label="Bayar Tagihan"
             onPress={() => handleBayarTagihan(billData)}
-            isLoading={isProcessing}
+            isLoading={isProcessing && !showModal}
           />
         </View>
       )}
+
+      <BottomModal
+        visible={showModal}
+        onDismis={() => setShowModal(false)}
+        title="Detail Transaksi">
+        <TransactionDetail
+          destination={billData?.customer_no}
+          product="BPJS Kesehatan"
+          description={billData?.customer_name || billData?.nama}
+          price={billData?.selling_price || billData?.price}
+          onConfirm={() => confirmPayment(billData)}
+          onCancel={() => setShowModal(false)}
+          isLoading={isProcessing}
+        />
+      </BottomModal>
     </SafeAreaView>
   );
 }

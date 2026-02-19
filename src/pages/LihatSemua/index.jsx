@@ -46,13 +46,23 @@ export default function LihatSemuaScreen({navigation}) {
     pascabayarLabels.includes(item.label.toLowerCase()),
   );
 
-  const comingSoonServices = ['PDAM', 'Internet'];
+  const comingSoonServices = [];
 
   const handleServicePress = item => {
     if (comingSoonServices.includes(item.label)) {
       Alert.alert('Segera Hadir', `Fitur ${item.label} akan segera hadir!`);
     } else {
-      navigation.navigate(item.path);
+      switch (item.label.toLowerCase()) {
+        case 'streaming':
+          navigation.navigate('Streaming');
+          break;
+        case 'pdam':
+          navigation.navigate(item.path);
+          break;
+        default:
+          navigation.navigate(item.path);
+          break;
+      }
     }
   };
 
@@ -138,7 +148,6 @@ const styles = StyleSheet.create({
     backgroundColor: isDarkMode ? '#1a2332' : WHITE_BACKGROUND,
     borderRadius: BORDER_RADIUS.large,
     padding: SPACING.md,
-    ...SHADOWS.small,
   }),
   grid: {
     flexDirection: 'row',

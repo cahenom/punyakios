@@ -52,6 +52,7 @@ export default function RegisterPage({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [referralCode, setReferralCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({
     visible: false,
@@ -80,6 +81,11 @@ export default function RegisterPage({navigation}) {
       return;
     }
 
+    if (password.length < 6) {
+      showAlert('Error', 'Password minimal 6 digit', 'error');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -90,7 +96,8 @@ export default function RegisterPage({navigation}) {
         name,
         email,
         password,
-        password_confirmation: passwordConfirmation
+        password_confirmation: passwordConfirmation,
+        referral_code: referralCode,
       };
 
       // Tambahkan FCM token ke data registrasi jika tersedia
@@ -235,6 +242,19 @@ export default function RegisterPage({navigation}) {
                   onChangeText={text => setPasswordConfirmation(text)}
                 />
               </View>
+            </View>
+
+            {/* Referral Code Input (Optional) */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel(isDarkMode)}>Kode Referral (Opsional)</Text>
+              <TextInput
+                style={styles.input(isDarkMode)}
+                placeholder="Masukan Kode Referral"
+                placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+                value={referralCode}
+                onChangeText={text => setReferralCode(text.toUpperCase())}
+                autoCapitalize="characters"
+              />
             </View>
 
             {/* Register Button */}

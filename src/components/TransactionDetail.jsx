@@ -1,88 +1,80 @@
 import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, useColorScheme } from 'react-native';
+import ModernButton from './ModernButton';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ActivityIndicator,
-  Dimensions,
-} from 'react-native';
-import {useColorScheme} from 'react-native';
-
-const {height: SCREEN_HEIGHT} = Dimensions.get('window');
-import {
-  BLUE_COLOR,
-  DARK_BACKGROUND,
   DARK_COLOR,
-  FONT_NORMAL,
-  FONT_SEDANG,
-  GREY_COLOR,
   LIGHT_COLOR,
   MEDIUM_FONT,
   REGULAR_FONT,
-  SLATE_COLOR,
-  WHITE_BACKGROUND,
-  WHITE_COLOR,
+  BLUE_COLOR,
 } from '../utils/const';
-import ModernButton from './ModernButton';
 import {numberWithCommas} from '../utils/formatter';
 
-const TransactionDetail = ({
-  destination,
-  product,
-  description,
-  price,
-  onConfirm,
-  onCancel,
-  isLoading = false,
+const TransactionDetail = ({ 
+  destination, 
+  product, 
+  description, 
+  price, 
+  onConfirm, 
+  onCancel, 
+  isLoading 
 }) => {
   const isDarkMode = useColorScheme() === 'dark';
 
+  // Fallback to empty strings if props are missing
+  const displayDestination = destination || '-';
+  const displayProduct = product || '-';
+  const displayDescription = description || '-';
+  
+  const formatPrice = (val) => {
+    if (!val) return 'Rp 0';
+    if (typeof val === 'string' && val.includes('Rp')) return val;
+    return `Rp ${numberWithCommas(val)}`;
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.modalData(isDarkMode)}>
-          <Text style={styles.labelModalData(isDarkMode)}>Nomor Tujuan</Text>
-          <Text style={styles.valueModalData(isDarkMode)}>{destination}</Text>
-        </View>
-        <View style={styles.modalData(isDarkMode)}>
-          <Text style={styles.labelModalData(isDarkMode)}>Produk</Text>
-          <Text style={styles.valueModalData(isDarkMode)}>{product}</Text>
-        </View>
-        {description && (
-          <View style={styles.modalData(isDarkMode)}>
-            <Text style={styles.labelModalData(isDarkMode)}>Deskripsi</Text>
-            <Text style={styles.valueModalData(isDarkMode)}>{description}</Text>
-          </View>
-        )}
-        <View style={styles.modalData(isDarkMode)}>
-          <Text style={styles.labelModalData(isDarkMode)}>Harga Total</Text>
-          <Text style={[styles.valueModalData(isDarkMode), {color: BLUE_COLOR, fontWeight: '700', fontSize: 18}]}>
-            {typeof price === 'string' && price.includes('Rp') ? price : `Rp ${numberWithCommas(price)}`}
-          </Text>
-        </View>
+      <View style={styles.detailRow}>
+        <Text style={styles.detailLabel}>Tujuan</Text>
+        <Text style={[styles.detailValue, {color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}]}>
+          {displayDestination}
+        </Text>
       </View>
-      <View style={styles.bottom(isDarkMode)}>
+      
+      <View style={styles.detailRow}>
+        <Text style={styles.detailLabel}>Produk</Text>
+        <Text style={[styles.detailValue, {color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}]}>
+          {displayProduct}
+        </Text>
+      </View>
+      
+      <View style={styles.detailRow}>
+        <Text style={styles.detailLabel}>Keterangan</Text>
+        <Text style={[styles.detailValue, {color: isDarkMode ? DARK_COLOR : LIGHT_COLOR}]}>
+          {displayDescription}
+        </Text>
+      </View>
+      
+      <View style={[styles.detailRow, {borderBottomWidth: 0}]}>
+        <Text style={styles.detailLabel}>Total Harga</Text>
+        <Text style={[styles.detailValue, {color: BLUE_COLOR, fontWeight: '700', fontSize: 18}]}>
+          {formatPrice(price)}
+        </Text>
+      </View>
+      
+      <View style={styles.buttonContainer}>
         <ModernButton
           label="Bayar Sekarang"
           onPress={onConfirm}
           isLoading={isLoading}
         />
-        {onCancel && (
-          <TouchableOpacity 
-            onPress={onCancel} 
-            style={{marginTop: 10, paddingVertical: 10}}
-            disabled={isLoading}
-          >
-            <Text style={{
-              textAlign: 'center', 
-              color: isDarkMode ? '#94a3b8' : '#64748b',
-              fontFamily: MEDIUM_FONT
-            }}>
-              Batalkan Transaksi
-            </Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity 
+          style={styles.cancelButton} 
+          onPress={onCancel}
+          disabled={isLoading}
+        >
+          <Text style={styles.cancelButtonText}>Batal</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -90,38 +82,43 @@ const TransactionDetail = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingBottom: 30, // Increased bottom padding
-    paddingTop: 10,    // Added top padding
+    width: '100%',
+    paddingBottom: 20,
+    paddingTop: 5,
   },
-  content: {
-    paddingHorizontal: 10,
-  },
-  bottom: isDarkMode => ({
-    backgroundColor: 'transparent',
-    paddingTop: 30,    // Increased spacing before button
-    marginTop: 15,
-  }),
-  modalData: isDarkMode => ({
-    borderBottomWidth: 1,
-    borderBottomColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
-    paddingVertical: 18, // Increased vertical padding for rows
+  detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.05)',
     alignItems: 'center',
-  }),
-  labelModalData: isDarkMode => ({
+  },
+  detailLabel: {
+    fontSize: 14,
+    color: '#64748b',
     fontFamily: REGULAR_FONT,
-    fontSize: 15, // Slightly larger font
-    color: isDarkMode ? '#94a3b8' : '#64748b',
-  }),
-  valueModalData: isDarkMode => ({
+  },
+  detailValue: {
+    fontSize: 15,
     fontFamily: MEDIUM_FONT,
-    fontSize: 16, // Slightly larger font
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
     textAlign: 'right',
     flex: 1,
     marginLeft: 20,
-  }),
+  },
+  buttonContainer: {
+    marginTop: 25,
+    rowGap: 12,
+  },
+  cancelButton: {
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: '#64748b',
+    fontSize: 15,
+    fontFamily: MEDIUM_FONT,
+  },
 });
 
 export default TransactionDetail;

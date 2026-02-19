@@ -10,6 +10,7 @@ import {
   Switch,
   Linking,
   SafeAreaView,
+  Clipboard,
 } from 'react-native';
 import {Alert} from '../../utils/alert';
 import React, {useState, useEffect, useCallback} from 'react';
@@ -40,7 +41,7 @@ import {version as appVersion} from '../../../package.json';
 
 export default function ProfilScreen({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
-  const {user, logout, refreshUserProfile, isBalanceVisible, toggleBalanceVisibility} = useAuth();
+  const {user, logout, refreshUserProfile, isBalanceVisible, toggleBalanceVisibility, upgradeToReseller} = useAuth();
   const {showAlert} = useAlert();
   const [refreshing, setRefreshing] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -336,6 +337,43 @@ export default function ProfilScreen({navigation}) {
       console.log('Error toggling biometrics:', error);
       Alert.alert('Error', 'Gagal mengelola login biometrik');
     }
+  };
+
+  const handleCopyReferral = () => {
+    if (user?.referral_code) {
+      Clipboard.setString(user.referral_code);
+      Alert.alert('Sukses', 'Kode referral berhasil disalin ke clipboard');
+    }
+  };
+
+  const handleUpgradeReseller = () => {
+    if (user?.roles_id === 2) {
+      Alert.alert('Info', 'Anda sudah menjadi Reseller.');
+      return;
+    }
+
+    Alert.alert(
+      'Konfirmasi Upgrade',
+      'Upgrade ke Reseller akan memotong saldo sebesar Rp 200.000. Apakah Anda yakin?',
+      [
+        { text: 'Batal', style: 'cancel' },
+        {
+          text: 'Upgrade',
+          onPress: async () => {
+            try {
+              const result = await upgradeToReseller();
+              if (result.success) {
+                Alert.alert('Sukses', result.message);
+              } else {
+                Alert.alert('Gagal', result.message);
+              }
+            } catch (error) {
+              Alert.alert('Error', 'Terjadi kesalahan sistem.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleLogout = () => {
@@ -646,6 +684,11 @@ export default function ProfilScreen({navigation}) {
               <View style={styles.verifiedBadge}>
                 <CheckProduct width={10} height={10} fill={WHITE_COLOR} />
               </View>
+              {user?.roles_id === 2 && (
+                <View style={{backgroundColor: '#eab308', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4}}>
+                  <Text style={{color: '#fff', fontSize: 10, fontFamily: BOLD_FONT}}>RESELLER</Text>
+                </View>
+              )}
             </View>
             <Text style={styles.profilePhone}>
               {user?.email || 'user@example.com'}
@@ -680,6 +723,31 @@ export default function ProfilScreen({navigation}) {
         </TouchableOpacity>
       </View>
 
+      <Text style={styles.sectionTitle}>Referral Program</Text>
+      <View style={styles.sectionCard}>
+        <View style={styles.listItem}>
+          <View style={{flex: 1}}>
+            <Text style={[styles.listItemText, {fontFamily: BOLD_FONT}]}>Kode Referral Saya</Text>
+            <Text style={{color: secondaryTextColor, fontSize: 12}}>Bagikan kode ini untuk dapat komisi</Text>
+          </View>
+          <TouchableOpacity 
+            onPress={handleCopyReferral}
+            style={{
+              backgroundColor: isDarkMode ? '#1e293b' : '#dbeafe',
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: isDarkMode ? '#334155' : '#bfdbfe'
+            }}
+          >
+            <Text style={{color: isDarkMode ? '#93c5fd' : '#1d4ed8', fontFamily: BOLD_FONT}}>
+              {user?.referral_code || '------'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <Text style={styles.sectionTitle}>Wallet & Payment</Text>
       <View style={styles.sectionCard}>
         <TouchableOpacity
@@ -702,6 +770,18 @@ export default function ProfilScreen({navigation}) {
           <Text style={styles.listItemText}>Transaction History</Text>
           <Text style={styles.chevronText}>›</Text>
         </TouchableOpacity>
+        {user?.roles_id === 1 && (
+          <>
+            <View style={styles.divider} />
+            <TouchableOpacity
+              style={styles.listItem}
+              onPress={handleUpgradeReseller}>
+              <Text style={[styles.listItemText, {color: '#1d4ed8', fontFamily: BOLD_FONT}]}>Upgrade ke Reseller</Text>
+              <Text style={{color: '#1d4ed8', fontSize: 10}}>Rp 200rb</Text>
+              <Text style={styles.chevronText}> ›</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </View>
 
       <Text style={styles.sectionTitle}>Settings</Text>

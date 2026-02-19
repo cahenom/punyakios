@@ -71,4 +71,9 @@ export const mainmenus = [
     ikon: InternetIkon,
     path: 'Internet',
   },
+  {
+    label: 'Streaming',
+    ikon: TvIkon,
+    path: 'Streaming',
+  },
 ];

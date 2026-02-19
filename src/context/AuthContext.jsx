@@ -63,7 +63,7 @@ const AuthProvider = ({children}) => {
           await logout();
         }
       } catch (error) {
-        console.error('Error fetching user profile on init:', error);
+        console.warn('Error fetching user profile on init:', error?.message || error);
         // Jika gagal terhubung ke server saat inisialisasi, paksa logout (Full Online)
         await logout();
       }
@@ -85,6 +85,7 @@ const AuthProvider = ({children}) => {
 
   const logout = async () => {
     await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('refresh_token');
     await AsyncStorage.removeItem('user');
     setAuthToken(null);
     setIsLoggedIn(false);
@@ -92,10 +93,14 @@ const AuthProvider = ({children}) => {
   };
 
   // Function to update login state manually when user logs in
-  const setLoggedInState = async (userData, token) => {
+  const setLoggedInState = async (userData, token, refreshToken = null) => {
     if (token) {
       await AsyncStorage.setItem('token', token);
       setAuthToken(token);
+    }
+    
+    if (refreshToken) {
+      await AsyncStorage.setItem('refresh_token', refreshToken);
     }
 
     if (userData) {
@@ -141,7 +146,7 @@ const AuthProvider = ({children}) => {
         console.log('Profile refresh rate limited (429)');
         return user; // Silently return existing user data on rate limit
       }
-      console.error('Error refreshing user profile:', error);
+      console.warn('Error refreshing user profile:', error?.message || error);
       throw error;
     }
   };
@@ -172,6 +177,7 @@ const AuthProvider = ({children}) => {
       console.log('Login response:', response.data); // Debug log
 
       const token = response.data.data?.token;
+      const refreshToken = response.data.data?.refresh_token;
       const user = response.data.data?.user;
 
       if (!token) {
@@ -180,6 +186,9 @@ const AuthProvider = ({children}) => {
 
       // SIMPAN TOKEN
       await AsyncStorage.setItem('token', token);
+      if (refreshToken) {
+        await AsyncStorage.setItem('refresh_token', refreshToken);
+      }
       setAuthToken(token);
 
       // SIMPAN USER
@@ -194,7 +203,7 @@ const AuthProvider = ({children}) => {
       setIsLoggedIn(true);
       setUser(user);
 
-      return { success: true, user, token };
+      return { success: true, user, token, refreshToken };
     } catch (error) {
       console.log('Login error details:', error.message);
       const errorMessage = error.response?.data?.message || error.message || 'Login gagal';
@@ -208,8 +217,25 @@ const AuthProvider = ({children}) => {
     await AsyncStorage.setItem('isBalanceVisible', newState.toString());
   };
 
+  const upgradeToReseller = async () => {
+    try {
+      const response = await api.post('/api/user/upgrade-reseller');
+      if (response.data && response.data.status === 'success') {
+        const updatedUser = response.data.data;
+        await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser(updatedUser);
+        return { success: true, message: response.data.message };
+      }
+      return { success: false, message: response.data.message || 'Gagal upgrade.' };
+    } catch (error) {
+      console.warn('Error upgrading to reseller:', error?.message || error);
+      const errorMessage = error.response?.data?.message || error.message || 'Terjadi kesalahan sistem.';
+      return { success: false, message: errorMessage };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn, user, setUser, logout, setLoggedInState, reloadUserData, refreshUserProfile, login, isCheckingAuth, isBalanceVisible, toggleBalanceVisibility}}>
+    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn, user, setUser, logout, setLoggedInState, reloadUserData, refreshUserProfile, login, isCheckingAuth, isBalanceVisible, toggleBalanceVisibility, upgradeToReseller}}>
       {children}
     </AuthContext.Provider>
   );

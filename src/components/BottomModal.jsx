@@ -6,9 +6,8 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   useColorScheme,
-  Animated,
 } from 'react-native';
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {
   BOLD_FONT,
   WHITE_BACKGROUND,
@@ -24,99 +23,55 @@ import {XClose} from '../assets';
 
 export default function BottomModal({visible, onDismis, title, children}) {
   const isDarkMode = useColorScheme() === 'dark';
-  const slideAnim = useRef(new Animated.Value(0)).current;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (visible) {
-      Animated.parallel([
-        Animated.spring(slideAnim, {
-          toValue: 1,
-          useNativeDriver: true,
-          tension: 65,
-          friction: 11,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 250,
-          useNativeDriver: true,
-        }),
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 250,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [visible]);
-
-  const translateY = slideAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [600, 0],
-  });
 
   return (
     <Modal
       visible={visible}
       animationType="none"
       onRequestClose={onDismis}
-      transparent={true}>
-      <TouchableWithoutFeedback onPress={onDismis}>
-        <Animated.View
-          style={[
-            styles.backdrop,
-            {
-              opacity: fadeAnim,
-            },
-          ]}
-        />
-      </TouchableWithoutFeedback>
-      <Animated.View
-        style={[
-          styles.modalContainer(isDarkMode),
-          {
-            transform: [{translateY}],
-          },
-        ]}>
-        <View style={styles.dragIndicatorContainer}>
-          <View style={styles.dragIndicator(isDarkMode)} />
+      transparent={true}
+      statusBarTranslucent={true}
+      hardwareAccelerated={true}>
+      <View style={styles.modalOverlay}>
+        <TouchableWithoutFeedback onPress={onDismis}>
+          <View style={styles.backdrop} />
+        </TouchableWithoutFeedback>
+        <View style={styles.modalContainer(isDarkMode)}>
+          <View style={styles.dragIndicatorContainer}>
+            <View style={styles.dragIndicator(isDarkMode)} />
+          </View>
+          <View style={styles.header}>
+            <Text style={styles.title(isDarkMode)}>{title}</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={onDismis}>
+              <XClose width={20} height={20} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.content}>{children}</View>
         </View>
-        <View style={styles.header}>
-          <Text style={styles.title(isDarkMode)}>{title}</Text>
-          <TouchableOpacity style={styles.closeButton} onPress={onDismis}>
-            <XClose width={20} height={20} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.content}>{children}</View>
-      </Animated.View>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'transparent',
+  },
   backdrop: {
     position: 'absolute',
-    bottom: 0,
     top: 0,
     left: 0,
     right: 0,
+    bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.6)',
   },
   modalContainer: isDarkMode => ({
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
-    minHeight: '50%',
+    minHeight: '40%',
     maxHeight: '90%',
-    position: 'absolute',
     width: windowWidth,
-    bottom: 0,
     borderTopLeftRadius: BORDER_RADIUS.xlarge,
     borderTopRightRadius: BORDER_RADIUS.xlarge,
     paddingTop: SPACING.sm,
@@ -155,4 +110,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-

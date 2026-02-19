@@ -37,8 +37,47 @@ api.interceptors.response.use(
     // If the response is successful, return it as is
     return response;
   },
-  (error) => {
-    // Handle different types of errors
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Handle 401 Unauthorized (Token expired)
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshToken = await AsyncStorage.getItem('refresh_token');
+        
+        if (refreshToken) {
+          // Temporarily swap authToken for refresh token to make the refresh request
+          const oldAuthToken = authToken;
+          setAuthToken(refreshToken);
+          
+          const response = await api.post('/api/auth/refresh');
+          
+          if (response.data?.status === 'success') {
+            const newToken = response.data.data.token;
+            
+            // Save new access token
+            await AsyncStorage.setItem('token', newToken);
+            setAuthToken(newToken);
+            
+            // Update original request header and retry
+            originalRequest.headers.Authorization = 'Bearer ' + newToken;
+            return api(originalRequest);
+          }
+        }
+      } catch (refreshError) {
+        console.log('Failed to refresh token:', refreshError);
+        // If refresh fails, tokens are probably invalid or expired
+        await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('refresh_token');
+        await AsyncStorage.removeItem('user');
+        setAuthToken(null);
+        // We can't easily trigger navigation from here, but the app state will react to token being null
+      }
+    }
+
+    // Handle other types of errors
     if (error.response) {
       // Server responded with an error status (4xx, 5xx)
       console.log('Server Error:', error.response.status, error.response.data);

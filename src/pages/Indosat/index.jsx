@@ -11,6 +11,7 @@ import {
   SafeAreaView,
   Modal,
   useColorScheme,
+  Keyboard,
 } from 'react-native';
 import CustomHeader from '../../components/CustomHeader';
 import {useNavigation} from '@react-navigation/native';
@@ -18,7 +19,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_URL} from '../../utils/const';
 import ProductBadge from '../../components/ProductBadge';
-import TransactionDetailModal from '../../components/TransactionDetailModal';
+import TransactionDetail from '../../components/TransactionDetail';
+import BottomModal from '../../components/BottomModal';
 import {
   DARK_BACKGROUND,
   WHITE_BACKGROUND,
@@ -82,10 +84,14 @@ const IndosatPage = () => {
   };
 
   const handleLanjutkan = () => {
+    Keyboard.dismiss();
+    console.log('[Indosat DEBUG] handleLanjutkan clicked');
     if (!selectedProduct) {
+      console.log('[Indosat DEBUG] No selected product');
       Alert.alert('Peringatan', 'Silakan pilih paket terlebih dahulu.');
       return;
     }
+    console.log('[Indosat DEBUG] Showing transaction modal');
     setTransactionModalVisible(true);
   };
 
@@ -324,21 +330,20 @@ const IndosatPage = () => {
         </View>
       )}
 
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <BottomModal
         visible={transactionModalVisible}
-        onRequestClose={() => setTransactionModalVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalView}>
-            <TransactionDetailModal
-              selectedProduct={selectedProduct}
-              onLanjut={handleLanjut}
-              onBatal={handleBatal}
-            />
-          </View>
-        </View>
-      </Modal>
+        onDismis={() => setTransactionModalVisible(false)}
+        title="Detail Transaksi">
+        <TransactionDetail
+          destination={phoneNumber}
+          product={selectedProduct?.title}
+          description={selectedProduct?.duration}
+          price={selectedProduct?.price}
+          onConfirm={handleLanjut}
+          onCancel={handleBatal}
+          isLoading={isProcessing}
+        />
+      </BottomModal>
     </SafeAreaView>
   );
 };

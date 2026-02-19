@@ -42,7 +42,9 @@ import {
   DepositFailed,
   PaymentWebView,
   HelpCenter,
-  PrivacyPolicy
+  PrivacyPolicy,
+  Streaming,
+  StreamingProduct
 } from '../pages';
 import Transaksi from '../pages/Transaksi';
 import {
@@ -285,6 +287,20 @@ function ProtectedRoute() {
       <Stack.Screen
         name="Internet"
         component={Internet}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Streaming"
+        component={Streaming}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="StreamingProduct"
+        component={StreamingProduct}
         options={{
           headerShown: false,
         }}

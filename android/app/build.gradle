@@ -98,10 +98,13 @@ android {
         versionName appVersion
     }
     packaging {
-    jniLibs {
-        useLegacyPackaging = true
+        jniLibs {
+            useLegacyPackaging = true
+            pickFirsts += [
+                '**/libc++_shared.so',
+            ]
+        }
     }
-}
 
     signingConfigs {
         debug {

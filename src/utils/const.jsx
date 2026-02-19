@@ -26,7 +26,7 @@ export const GREEN_COLOR = '#01C1A2';
 export const RED_COLOR = '#FF0000';
 export const WHITE_COLOR = '#FFFFFF';
 
-export const API_URL = 'https://v1.maktopup.com';
+export const API_URL = 'https://20cc-114-10-98-29.ngrok-free.app';
 
 // Modern Design Tokens
 export const GRADIENTS = {

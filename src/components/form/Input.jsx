@@ -68,6 +68,7 @@ export default function Input({
           lebar && {width: lebar},
         ]}>
         <Animated.Text
+          pointerEvents="none"
           style={[
             styles.label(isDarkMode, isFocused, hasError),
             labelStyle,
@@ -75,7 +76,7 @@ export default function Input({
           {placeholder}
         </Animated.Text>
         <TextInput
-          placeholder={isFocused ? '' : placeholder}
+          accessibilityLabel={placeholder}
           placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
           keyboardType={type ? type : 'default'}
           value={value}
@@ -123,11 +124,11 @@ const styles = StyleSheet.create({
       : GREY_COLOR,
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
     paddingHorizontal: SPACING.lg,
-    paddingTop: SPACING.lg,
-    paddingBottom: SPACING.sm,
     position: 'relative',
-    minHeight: 56,
+    height: 54, // Fixed height for stability
+    justifyContent: 'center',
     ...(isFocused ? SHADOWS.small : {}),
+    zIndex: 1,
   }),
   errorBorder: {
     borderColor: RED_COLOR,
@@ -146,15 +147,19 @@ const styles = StyleSheet.create({
       ? SLATE_COLOR
       : GREY_COLOR,
     fontFamily: REGULAR_FONT,
-    zIndex: 1,
+    zIndex: -1, // Layer behind input to never block touches
   }),
   input: (isDarkMode, hasRightIcon) => ({
     fontFamily: REGULAR_FONT,
     fontSize: 14,
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    padding: 0,
+    flex: 1, // Fill available space in fixed-height wrapper
+    width: '100%',
+    paddingTop: 14, // Space for label
+    paddingBottom: 0,
     margin: 0,
     paddingRight: hasRightIcon ? 45 : 40,
+    zIndex: 10, // Ensure TextInput is always on top
   }),
   clearButton: {
     position: 'absolute',
@@ -162,6 +167,7 @@ const styles = StyleSheet.create({
     top: '50%',
     transform: [{translateY: -7.5}],
     padding: SPACING.xs,
+    zIndex: 20,
   },
   rightActionButton: {
     position: 'absolute',
@@ -169,12 +175,14 @@ const styles = StyleSheet.create({
     top: '50%',
     transform: [{translateY: -12}], // Centering the icon
     padding: SPACING.xs,
+    zIndex: 20,
   },
   errorIndicator: {
     position: 'absolute',
     right: 40,
     top: '50%',
     transform: [{translateY: -10}],
+    zIndex: 20,
   },
   errorIcon: {
     color: RED_COLOR,
