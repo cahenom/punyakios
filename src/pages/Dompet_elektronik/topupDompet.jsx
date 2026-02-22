@@ -22,6 +22,7 @@ import SkeletonCard from '../../components/SkeletonCard';
 import BottomModal from '../../components/BottomModal';
 import TransactionDetail from '../../components/TransactionDetail';
 import { api } from '../../utils/api';
+import {useAuth} from '../../context/AuthContext';
 import {numberWithCommas} from '../../utils/formatter';
 import { makeTopupCall } from '../../helpers/apiBiometricHelper';
 import CustomHeader from '../../components/CustomHeader';
@@ -37,6 +38,8 @@ export default function TopupDompet({route, navigation}) {
   const [sortedProducts, setSortedProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  const [usePoints, setUsePoints] = useState(false);
+  const {user} = useAuth();
 
   // Simple validation
   const validateInputs = () => {
@@ -141,6 +144,7 @@ export default function TopupDompet({route, navigation}) {
       const response = await makeTopupCall({
         sku: selectItem.sku,
         customer_no: customer_no,
+        use_points: usePoints,
       }, 'Verifikasi sidik jari atau wajah untuk melakukan topup dompet elektronik');
 
       // Close confirmation modal after response
@@ -292,6 +296,9 @@ export default function TopupDompet({route, navigation}) {
           }}
           onCancel={() => setShowModal(false)}
           isLoading={isProcessing}
+          availablePoints={user?.points || 0}
+          usePoints={usePoints}
+          onTogglePoints={() => setUsePoints(!usePoints)}
         />
       </BottomModal>
     </SafeAreaView>

@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
@@ -73,7 +74,6 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
-import groovy.json.JsonSlurper
 
 def getAppVersion() {
     def inputFile = new File(projectDir, "../../package.json")
@@ -99,7 +99,7 @@ android {
     }
     packaging {
         jniLibs {
-            useLegacyPackaging = true
+            useLegacyPackaging = false
             pickFirsts += [
                 '**/libc++_shared.so',
             ]

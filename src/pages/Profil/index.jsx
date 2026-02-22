@@ -446,14 +446,6 @@ export default function ProfilScreen({navigation}) {
       borderRadius: 18, // rounded-2xl
       padding: 24, // p-6
       marginBottom: 20,
-      elevation: 3,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
       position: 'relative',
       overflow: 'hidden',
     },
@@ -555,14 +547,6 @@ export default function ProfilScreen({navigation}) {
       padding: 12,
       alignItems: 'center',
       justifyContent: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
-      elevation: 2,
       borderWidth: 1,
       borderColor: dividerColor,
       overflow: 'hidden',
@@ -718,7 +702,9 @@ export default function ProfilScreen({navigation}) {
         <TouchableOpacity style={styles.quickActionItem}>
           <Text style={styles.quickActionText}>Support</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.quickActionItem}>
+        <TouchableOpacity 
+          style={styles.quickActionItem}
+          onPress={() => navigation.navigate('P2PScan', {tab: 'myqr'})}>
           <Text style={styles.quickActionText}>My QR</Text>
         </TouchableOpacity>
       </View>

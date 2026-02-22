@@ -44,7 +44,10 @@ import {
   HelpCenter,
   PrivacyPolicy,
   Streaming,
-  StreamingProduct
+  StreamingProduct,
+  TransferPage,
+  TransferAmountPage,
+  PointsRedeem
 } from '../pages';
 import Transaksi from '../pages/Transaksi';
 import {
@@ -373,6 +376,34 @@ function ProtectedRoute() {
       <Stack.Screen
         name="PrivacyPolicy"
         component={PrivacyPolicy}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Transfer"
+        component={TransferPage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="TransferAmount"
+        component={TransferAmountPage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PointsRedeem"
+        component={PointsRedeem}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="P2PScan"
+        component={ScanScreen}
         options={{
           headerShown: false,
         }}

@@ -163,7 +163,7 @@ const AuthProvider = ({children}) => {
       }
 
       const loginData = {
-        email,
+        identifier: email,
         password,
       };
 

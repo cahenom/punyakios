@@ -112,16 +112,15 @@ export default function LoginPage({navigation}) {
           <View style={styles.formContainer}>
             <Text style={styles.formTitle(isDarkMode)}>Login</Text>
             
-            {/* Email Input */}
+            {/* Identifier Input (Email or Phone) */}
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel(isDarkMode)}>Email</Text>
+              <Text style={styles.inputLabel(isDarkMode)}>Email atau Nomor HP</Text>
               <TextInput
                 style={styles.input(isDarkMode)}
-                placeholder="Masukan email"
+                placeholder="Email atau Nomor HP"
                 placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
                 value={email}
                 onChangeText={text => setEmail(text.trim())}
-                keyboardType="email-address"
                 autoCapitalize="none"
               />
             </View>

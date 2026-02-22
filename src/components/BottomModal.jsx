@@ -107,6 +107,6 @@ const styles = StyleSheet.create({
     padding: SPACING.sm,
   },
   content: {
-    flex: 1,
+    // Removed flex: 1 to allow children to dictate height more naturally
   },
 });

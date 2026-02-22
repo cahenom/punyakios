@@ -9,6 +9,7 @@ import {
 import {Alert} from '../../utils/alert';
 import React, {useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
+import {useAuth} from '../../context/AuthContext';
 import {
   DARK_BACKGROUND,
   DARK_COLOR,
@@ -38,6 +39,8 @@ export default function BpjsKesehatan() {
   const [loading, setLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [usePoints, setUsePoints] = useState(false);
+  const {user} = useAuth();
 
   const handleCekTagihan = async () => {
     if (!customer_no.trim()) {
@@ -85,6 +88,7 @@ export default function BpjsKesehatan() {
         sku: 'bpjs',
         customer_no: data.customer_no,
         ref_id: data.ref_id,
+        use_points: usePoints,
       }, 'Verifikasi sidik jari atau biometric wajah untuk membayar tagihan BPJS');
 
       setShowModal(false);
@@ -201,6 +205,9 @@ export default function BpjsKesehatan() {
           onConfirm={() => confirmPayment(billData)}
           onCancel={() => setShowModal(false)}
           isLoading={isProcessing}
+          availablePoints={user?.points || 0}
+          usePoints={usePoints}
+          onTogglePoints={() => setUsePoints(!usePoints)}
         />
       </BottomModal>
     </SafeAreaView>

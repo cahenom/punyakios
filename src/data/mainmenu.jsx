@@ -6,6 +6,7 @@ import {
   InternetIkon,
   PDAMIkon,
   PLNIkon,
+  SendIkon,
   TvIkon,
   VoucherIkon,
 } from '../assets';

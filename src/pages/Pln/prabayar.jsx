@@ -42,6 +42,7 @@ import {numberWithCommas} from '../../utils/formatter';
 import CustomHeader from '../../components/CustomHeader';
 import SkeletonCard from '../../components/SkeletonCard';
 import ModernButton from '../../components/ModernButton';
+import {useAuth} from '../../context/AuthContext';
 
 // Smart Daily Cache Logic for PLN Prabayar
 const PLN_CACHE_KEY = 'pln_prabayar_cache';
@@ -172,6 +173,8 @@ export default function PLNPrabayar({navigation}) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false); // Loading state to prevent spam clicks
+  const [usePoints, setUsePoints] = useState(false);
+  const {user} = useAuth();
 
   const handleContinue = () => {
     if (!customer_no) {
@@ -203,6 +206,7 @@ export default function PLNPrabayar({navigation}) {
       const response = await makeTopupCall({
         sku: selectItem.sku,
         customer_no: customer_no,
+        use_points: usePoints,
       }, 'Verifikasi sidik jari atau wajah untuk melakukan topup PLN prabayar');
 
       console.log('PLN Topup response:', response);
@@ -354,6 +358,9 @@ export default function PLNPrabayar({navigation}) {
           }}
           onCancel={() => setShowModal(false)}
           isLoading={isProcessing}
+          availablePoints={user?.points || 0}
+          usePoints={usePoints}
+          onTogglePoints={() => setUsePoints(!usePoints)}
         />
       </BottomModal>
     </SafeAreaView>

@@ -50,6 +50,7 @@ export default function RegisterPage({navigation}) {
   const [isSecure, setIsSecure] = useState(true);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [referralCode, setReferralCode] = useState('');
@@ -71,7 +72,7 @@ export default function RegisterPage({navigation}) {
   };
 
   const handleRegister = async () => {
-    if (!name || !email || !password || !passwordConfirmation) {
+    if (!name || !email || !phone || !password || !passwordConfirmation) {
       showAlert('Error', 'Semua field wajib diisi', 'error');
       return;
     }
@@ -95,6 +96,7 @@ export default function RegisterPage({navigation}) {
       const registerData = {
         name,
         email,
+        phone,
         password,
         password_confirmation: passwordConfirmation,
         referral_code: referralCode,
@@ -206,6 +208,19 @@ export default function RegisterPage({navigation}) {
                 onChangeText={text => setEmail(text.trim())}
                 keyboardType="email-address"
                 autoCapitalize="none"
+              />
+            </View>
+
+            {/* Phone Input */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel(isDarkMode)}>Nomor HP</Text>
+              <TextInput
+                style={styles.input(isDarkMode)}
+                placeholder="Masukan Nomor HP"
+                placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+                value={phone}
+                onChangeText={text => setPhone(text)}
+                keyboardType="phone-pad"
               />
             </View>
 

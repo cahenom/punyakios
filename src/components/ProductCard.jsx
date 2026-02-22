@@ -61,6 +61,11 @@ const ProductCard = ({
           <Text style={styles.productPrice(isDarkMode, isSelected)}>
             Rp {numberWithCommas(product.price || product.product_seller_price)}
           </Text>
+          {product.points > 0 && (
+            <View style={styles.pointsBadge}>
+              <Text style={styles.pointsText}>+{product.points} Poin</Text>
+            </View>
+          )}
           {product.desc && (
             <Text style={styles.productDesc(isDarkMode, isSelected)} numberOfLines={2}>
               {product.desc || product.product_desc}
@@ -99,6 +104,19 @@ const styles = StyleSheet.create({
   }),
   contentContainer: {
     flex: 1,
+  },
+  pointsBadge: {
+    backgroundColor: '#f97316',
+    alignSelf: 'flex-start',
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: 2,
+    borderRadius: BORDER_RADIUS.small,
+    marginBottom: SPACING.xs,
+  },
+  pointsText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontFamily: MEDIUM_FONT,
   },
   productLabel: (isDarkMode, isSelected) => ({
     fontFamily: MEDIUM_FONT,

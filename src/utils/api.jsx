@@ -81,9 +81,16 @@ api.interceptors.response.use(
     if (error.response) {
       // Server responded with an error status (4xx, 5xx)
       console.log('Server Error:', error.response.status, error.response.data);
+      
       if (error.response.status === 429) {
-        // Handle rate limiting silently or with a specific message if needed
+        // Handle rate limiting silently
         return Promise.reject(error);
+      }
+
+      // Show error message from server if available
+      const serverMessage = error.response.data?.message;
+      if (serverMessage) {
+        Alert.alert('Server Error', serverMessage);
       }
     } else if (error.request) {
       // Request was made but no response received

@@ -43,6 +43,9 @@ import PrivacyPolicy from './PrivacyPolicy';
 import OnboardingScreen from './Onboarding';
 import PromoScreen from './Promo';
 import ScanScreen from './Scan';
+import TransferPage from './Transfer';
+import TransferAmountPage from './Transfer/TransferAmount';
+import PointsRedeem from './Profil/PointsRedeem';
 
 export {
   HomeScreen,
@@ -89,5 +92,8 @@ export {
   PrivacyPolicy,
   OnboardingScreen,
   PromoScreen,
-  ScanScreen
+  ScanScreen,
+  TransferPage,
+  TransferAmountPage,
+  PointsRedeem
 };

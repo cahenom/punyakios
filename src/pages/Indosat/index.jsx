@@ -13,9 +13,10 @@ import {
   useColorScheme,
   Keyboard,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import CustomHeader from '../../components/CustomHeader';
-import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useAuth} from '../../context/AuthContext';
 import axios from 'axios';
 import {API_URL} from '../../utils/const';
 import ProductBadge from '../../components/ProductBadge';
@@ -43,6 +44,8 @@ const IndosatPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [transactionModalVisible, setTransactionModalVisible] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false); // State to prevent double clicks
+  const [usePoints, setUsePoints] = useState(false);
+  const {user} = useAuth();
 
   const fetchProducts = async () => {
     if (!phoneNumber.trim()) {
@@ -150,6 +153,7 @@ const IndosatPage = () => {
             {
               sku: 'indosat', // Use 'indosat' as the sku
               customer_no: inquiryResponse.data.originalResponse.kode_bayar, // Use kode_bayar as customer_no
+              use_points: usePoints,
             },
             {
               headers: {
@@ -342,6 +346,9 @@ const IndosatPage = () => {
           onConfirm={handleLanjut}
           onCancel={handleBatal}
           isLoading={isProcessing}
+          availablePoints={user?.points || 0}
+          usePoints={usePoints}
+          onTogglePoints={() => setUsePoints(!usePoints)}
         />
       </BottomModal>
     </SafeAreaView>

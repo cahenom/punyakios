@@ -1,6 +1,6 @@
 {
   "name": "Punya Kios",
-  "version": "4.2.1",
+  "version": "4.2.5",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -27,6 +27,7 @@
     "react-native-contacts": "^8.0.10",
     "react-native-crypto": "^2.2.1",
     "react-native-linear-gradient": "^2.8.3",
+    "react-native-qrcode-svg": "^6.3.21",
     "react-native-randombytes": "^3.6.2",
     "react-native-safe-area-context": "^5.6.2",
     "react-native-screens": "^4.5.0",

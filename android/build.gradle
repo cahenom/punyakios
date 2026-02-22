@@ -4,7 +4,7 @@ buildscript {
         minSdkVersion = 24
         compileSdkVersion = 35
         targetSdkVersion = 35
-        ndkVersion = "26.1.10909125"
+        ndkVersion = "27.0.12077973"
         kotlinVersion = "2.0.21"
     }
     repositories {
@@ -27,6 +27,17 @@ subprojects {
             project.android {
                 if (project.android.hasProperty('ndkVersion')) {
                     ndkVersion rootProject.ext.ndkVersion
+                }
+                // Inject 16KB alignment linker flags
+                project.android.defaultConfig {
+                    externalNativeBuild {
+                        cmake {
+                            cppFlags "-Wl,-z,max-page-size=16384"
+                        }
+                        ndkBuild {
+                            cppFlags "-Wl,-z,max-page-size=16384"
+                        }
+                    }
                 }
             }
         }

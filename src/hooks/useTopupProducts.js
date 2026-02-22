@@ -128,7 +128,8 @@ export default function useTopupProducts(provider, title, endpoint, cacheKeyPref
           desc: item.desc,
           category: item.category,
           sku: item.sku,
-          multi: item.multi
+          multi: item.multi,
+          points: item.points
         }));
 
         await setProducts(transformedProducts);
@@ -191,7 +192,8 @@ export default function useTopupProducts(provider, title, endpoint, cacheKeyPref
             desc: item.desc,
             category: item.category,
             sku: item.sku,
-            multi: item.multi
+            multi: item.multi,
+            points: item.points
           }));
 
           await setProducts(transformedProducts);

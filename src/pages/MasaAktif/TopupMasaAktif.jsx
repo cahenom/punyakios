@@ -24,6 +24,7 @@ import BottomModal from '../../components/BottomModal';
 import TransactionDetail from '../../components/TransactionDetail';
 import useTopupProducts from '../../hooks/useTopupProducts';
 import { api } from '../../utils/api';
+import {useAuth} from '../../context/AuthContext';
 import {numberWithCommas} from '../../utils/formatter';
 import { makeTopupCall } from '../../helpers/apiBiometricHelper';
 import CustomHeader from '../../components/CustomHeader';
@@ -51,6 +52,8 @@ export default function TopupMasaAktif({route}) {
 
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false); // Loading state to prevent spam clicks
+  const [usePoints, setUsePoints] = useState(false);
+  const {user} = useAuth();
 
   const handleContinue = () => {
     if (!validateInputs()) {
@@ -75,6 +78,7 @@ export default function TopupMasaAktif({route}) {
       const response = await makeTopupCall({
         sku: selectItem.sku,
         customer_no: customer_no,
+        use_points: usePoints,
       }, 'Verifikasi sidik jari atau wajah untuk melakukan topup masa aktif');
 
       console.log('Topup response:', response);
@@ -230,6 +234,9 @@ export default function TopupMasaAktif({route}) {
           }}
           onCancel={() => setShowModal(false)}
           isLoading={isProcessing}
+          availablePoints={user?.points || 0}
+          usePoints={usePoints}
+          onTogglePoints={() => setUsePoints(!usePoints)}
         />
       </BottomModal>
     </SafeAreaView>

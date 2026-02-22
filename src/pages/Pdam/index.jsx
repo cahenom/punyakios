@@ -36,6 +36,7 @@ import {makeCekTagihanCall, makeBayarTagihanCall} from '../../helpers/apiBiometr
 import BottomModal from '../../components/BottomModal';
 import TransactionDetail from '../../components/TransactionDetail';
 import { useNavigation } from '@react-navigation/native';
+import {useAuth} from '../../context/AuthContext';
 import {api} from '../../utils/api';
 
 export default function PDAM() {
@@ -50,6 +51,8 @@ export default function PDAM() {
   const [showModalConfirm, setShowModalConfirm] = useState(false);
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
+  const [usePoints, setUsePoints] = useState(false);
+  const {user} = useAuth();
 
   useEffect(() => {
     fetchProducts();
@@ -125,6 +128,7 @@ export default function PDAM() {
         sku: wilayahPdam.sku,
         customer_no: data.customer_no,
         ref_id: data.ref_id,
+        use_points: usePoints,
       }, `Verifikasi untuk membayar tagihan PDAM ${wilayahPdam.name}`);
 
       setShowModalConfirm(false);
@@ -263,6 +267,9 @@ export default function PDAM() {
           onConfirm={() => confirmPayment(billData)}
           onCancel={() => setShowModalConfirm(false)}
           isLoading={isProcessing}
+          availablePoints={user?.points || 0}
+          usePoints={usePoints}
+          onTogglePoints={() => setUsePoints(!usePoints)}
         />
       </BottomModal>
 

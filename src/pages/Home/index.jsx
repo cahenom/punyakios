@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
-import {BellIkon, Eye, EyeCros} from '../../assets';
+import {BellIkon, Eye, EyeCros, SendIkon} from '../../assets';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   BOLD_FONT,
@@ -283,13 +283,40 @@ export default function HomeScreen({navigation}) {
                 )}
               </TouchableOpacity>
             </View>
+            <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 4}}>
+              <View style={[
+                styles.pointsBalanceContainer, 
+                !isBalanceVisible && {backgroundColor: 'rgba(249, 115, 22, 0.2)', borderColor: '#f97316'}
+              ]}>
+                <Text style={[
+                  styles.pointsBalanceText(isDarkMode),
+                  !isBalanceVisible && {fontWeight: 'bold'}
+                ]}>
+                  🪙 {user?.points || 0} Poin
+                </Text>
+              </View>
+              <TouchableOpacity 
+                style={styles.exchangeButton}
+                onPress={() => navigation.navigate('PointsRedeem')}>
+                <Text style={styles.exchangeButtonText}>Tukar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <TouchableOpacity
-            style={styles.depositButton}
-            onPress={() => navigation.navigate('DepositPage')}
-            activeOpacity={0.8}>
-            <Text style={styles.depositText}>+ Deposit</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row', gap: 8}}>
+            <TouchableOpacity
+              style={[styles.depositButton, {backgroundColor: isDarkMode ? '#1e293b' : '#f1f5f9', borderWidth: 1, borderColor: isDarkMode ? '#334155' : '#e2e8f0'}]}
+              onPress={() => navigation.navigate('Transfer')}
+              activeOpacity={0.8}>
+              <SendIkon width={16} height={16} fill={isDarkMode ? '#93c5fd' : BLUE_COLOR} />
+              <Text style={[styles.depositText, {color: isDarkMode ? '#93c5fd' : BLUE_COLOR, marginLeft: 4}]}>Kirim</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.depositButton}
+              onPress={() => navigation.navigate('DepositPage')}
+              activeOpacity={0.8}>
+              <Text style={styles.depositText}>+ Deposit</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* ===== SERVICES GRID ===== */}
@@ -530,11 +557,41 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
   }),
+  pointsBalanceContainer: {
+    marginTop: 4,
+    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(249, 115, 22, 0.2)',
+  },
+  pointsBalanceText: isDarkMode => ({
+    fontFamily: MEDIUM_FONT,
+    fontSize: 12,
+    color: '#f97316',
+  }),
+  exchangeButton: {
+    marginLeft: 8,
+    backgroundColor: '#f97316',
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  exchangeButtonText: {
+    fontFamily: BOLD_FONT,
+    fontSize: 10,
+    color: WHITE_COLOR,
+  },
   depositButton: {
     backgroundColor: BLUE_COLOR,
-    paddingVertical: SPACING.sm + 2,
-    paddingHorizontal: SPACING.lg,
-    borderRadius: BORDER_RADIUS.full,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: 12,
+    borderRadius: BORDER_RADIUS.medium,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   depositText: {
     fontFamily: BOLD_FONT,

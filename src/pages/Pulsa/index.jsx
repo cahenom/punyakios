@@ -31,6 +31,7 @@ import {
   SLATE_COLOR,
   WHITE_BACKGROUND,
 } from '../../utils/const';
+import {useAuth} from '../../context/AuthContext';
 import {product_pulsa} from '../../data/product_pulsa';
 import {UserDefault} from '../../assets';
 import {selectContactPhone} from 'react-native-select-contact';
@@ -51,12 +52,14 @@ const getPulsaCacheKey = (nomor) => `pulsa_cache_${nomor}`;
 
 export default function Pulsa({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
+  const {user} = useAuth();
   const [nomorTujuan, setNomor] = useState(null);
   const [selectItem, setSelectItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [data_pulsa, setPulsa] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isPickingContact, setIsPickingContact] = useState(false);
+  const [usePoints, setUsePoints] = useState(false);
 
   const clearNomor = () => {
     setNomor(null);
@@ -185,6 +188,7 @@ export default function Pulsa({navigation}) {
           customer_no: nomorTujuan,
           sku: selectItem?.sku || selectItem?.product_sku,
           type: 'pulsa', // Specify the type for the unified endpoint
+          use_points: usePoints,
         },
         'Verifikasi sidik jari atau wajah untuk melakukan isi pulsa',
       );
@@ -337,6 +341,9 @@ export default function Pulsa({navigation}) {
           onConfirm={() => handleTopup()}
           onCancel={() => setShowModal(false)}
           isLoading={isProcessing}
+          availablePoints={user?.points || 0}
+          usePoints={usePoints}
+          onTogglePoints={() => setUsePoints(!usePoints)}
         />
       </BottomModal>
       </SafeAreaView>

@@ -95,6 +95,8 @@ const shouldRequireBiometric = endpoint => {
     '/api/payment/voucher',
     '/api/payment/games',
     '/api/payment/masaaktif',
+    '/api/user/transfer',
+    '/api/points/exchange',
   ];
 
   return orderEndpoints.some(
@@ -168,5 +170,37 @@ export const makePaymentCall = async (
     'POST',
     biometricPrompt,
     true, // Always require biometric for payment endpoints
+  );
+};
+
+/**
+ * Specific helper for transfer endpoints
+ */
+export const makeTransferCall = async (
+  data,
+  biometricPrompt = 'Verifikasi biometrik untuk melanjutkan transfer',
+) => {
+  return makeApiCallWithBiometric(
+    '/api/user/transfer',
+    data,
+    'POST',
+    biometricPrompt,
+    true, // Always require biometric for transfer
+  );
+};
+
+/**
+ * Specific helper for point exchange endpoints
+ */
+export const makeExchangeCall = async (
+  data,
+  biometricPrompt = 'Verifikasi biometrik untuk menukar poin',
+) => {
+  return makeApiCallWithBiometric(
+    '/api/points/exchange',
+    data,
+    'POST',
+    biometricPrompt,
+    true, // Always require biometric for point exchange
   );
 };

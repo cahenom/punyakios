@@ -154,12 +154,14 @@ const DepositPage = () => {
             styles.transactionStatus,
             {
               color:
-                item.status === 'Success' || item.status === 'BERHASIL'
+                ['success', 'berhasil', 'paid', 'completed', 'settled'].includes(item.status?.toLowerCase())
                   ? '#10b981'
-                  : '#f59e0b',
+                  : ['pending', 'diproses', 'pending_settlement'].includes(item.status?.toLowerCase())
+                  ? '#f59e0b'
+                  : '#ef4444',
             },
           ]}>
-          {item.status || 'Pending'}
+          {item.status === 'paid' ? 'BERHASIL' : item.status === 'expired' ? 'KADALUARSA' : item.status || 'Pending'}
         </Text>
       </View>
     </View>

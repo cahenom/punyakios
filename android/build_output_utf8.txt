@@ -1,0 +1,120 @@
+﻿> Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:shared:compileJava NO-SOURCE
+> Task :gradle-plugin:shared:processResources NO-SOURCE
+> Task :gradle-plugin:shared:classes UP-TO-DATE
+> Task :gradle-plugin:shared:jar UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:settings-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:jar UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:react-native-gradle-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:react-native-gradle-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:jar UP-TO-DATE
+
+> Configure project :notifee_react-native
+:notifee_react-native @notifee/react-native found at C:\Users\p\Documents\project\PUNYAKIOS\node_modules\@notifee\react-native
+:notifee_react-native package.json found at C:\Users\p\Documents\project\PUNYAKIOS\node_modules\@notifee\react-native\package.json
+:notifee_react-native:version set from package.json: 9.1.8 (9,1,8 - 9001008)
+:notifee_react-native:android.compileSdk using custom value: 35
+:notifee_react-native:android.targetSdk using custom value: 35
+:notifee_react-native:android.minSdk using custom value: 24
+:notifee_react-native:reactNativeAndroidDir C:\Users\p\Documents\project\PUNYAKIOS\node_modules\react-native\android
+
+> Configure project :react-native-firebase_app
+:react-native-firebase_app package.json found at C:\Users\p\Documents\project\PUNYAKIOS\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:firebase.bom using default value: 33.12.0
+:react-native-firebase_app:play.play-services-auth using default value: 21.3.0
+:react-native-firebase_app package.json found at C:\Users\p\Documents\project\PUNYAKIOS\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_app:version set from package.json: 21.14.0 (21,14,0 - 21014000)
+:react-native-firebase_app:android.compileSdk using custom value: 35
+:react-native-firebase_app:android.targetSdk using custom value: 35
+:react-native-firebase_app:android.minSdk using custom value: 24
+:react-native-firebase_app:reactNativeAndroidDir C:\Users\p\Documents\project\PUNYAKIOS\node_modules\react-native\android
+
+> Configure project :react-native-firebase_messaging
+:react-native-firebase_messaging package.json found at C:\Users\p\Documents\project\PUNYAKIOS\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_app package.json found at C:\Users\p\Documents\project\PUNYAKIOS\node_modules\@react-native-firebase\app\package.json
+:react-native-firebase_messaging:firebase.bom using default value: 33.12.0
+:react-native-firebase_messaging package.json found at C:\Users\p\Documents\project\PUNYAKIOS\node_modules\@react-native-firebase\messaging\package.json
+:react-native-firebase_messaging:version set from package.json: 21.14.0 (21,14,0 - 21014000)
+:react-native-firebase_messaging:android.compileSdk using custom value: 35
+:react-native-firebase_messaging:android.targetSdk using custom value: 35
+:react-native-firebase_messaging:android.minSdk using custom value: 24
+:react-native-firebase_messaging:reactNativeAndroidDir C:\Users\p\Documents\project\PUNYAKIOS\node_modules\react-native\android
+
+> Configure project :react-native-screens
+Checking the license for package NDK (Side by side) 27.0.12077973 in C:\Users\p\AppData\Local\Android\Sdk\licenses
+License for package NDK (Side by side) 27.0.12077973 accepted.
+Preparing "Install NDK (Side by side) 27.0.12077973 v.27.0.12077973".
+"Install NDK (Side by side) 27.0.12077973 v.27.0.12077973" ready.
+Installing NDK (Side by side) 27.0.12077973 in C:\Users\p\AppData\Local\Android\Sdk\ndk\27.0.12077973
+"Install NDK (Side by side) 27.0.12077973 v.27.0.12077973" complete.
+"Install NDK (Side by side) 27.0.12077973 v.27.0.12077973" finished.
+
+> Configure project :react-native-vision-camera
+[VisionCamera] Thank you for using VisionCamera ??
+[VisionCamera] If you enjoy using VisionCamera, please consider sponsoring this project: https://github.com/sponsors/mrousavy
+[VisionCamera] node_modules found at C:\Users\p\Documents\project\PUNYAKIOS\node_modules
+[VisionCamera] VisionCamera_enableFrameProcessors is set to true!
+[VisionCamera] react-native-worklets-core found, Frame Processors are enabled!
+[VisionCamera] VisionCamera_enableCodeScanner is set to true!
+
+> Task :app:clean FAILED
+./gradlew : 
+At line:1 char:1
++ ./gradlew clean > build_output.txt 2>&1; 
+Get-Content build_output.txt ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:Strin 
+   g) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:clean'.
+> java.io.IOException: Unable to delete directory 'C
+:\Users\p\Documents\project\PUNYAKIOS\android\app\bu
+ild'
+    Failed to delete some children. This might 
+happen because a process has files open or has its 
+working directory set in the target directory.
+    - C:\Users\p\Documents\project\PUNYAKIOS\android
+\app\build\intermediates\lint-cache\lintVitalAnalyze
+Release\migrated-jars\androidx.lifecycle.lint.LiveDa
+taCoreIssueRegistry-32b654e6cacc2c23..jar
+    - C:\Users\p\Documents\project\PUNYAKIOS\android
+\app\build\intermediates\lint-cache\lintVitalAnalyze
+Release\migrated-jars
+    - C:\Users\p\Documents\project\PUNYAKIOS\android
+\app\build\intermediates\lint-cache\lintVitalAnalyze
+Release
+    - C:\Users\p\Documents\project\PUNYAKIOS\android
+\app\build\intermediates\lint-cache
+    - C:\Users\p\Documents\project\PUNYAKIOS\android
+\app\build\intermediates
+
+* Try:
+> Run with --stacktrace option to get the stack 
+trace.
+> Run with --info or --debug option to get more log 
+output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.9/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2m 50s
+11 actionable tasks: 1 executed, 10 up-to-date

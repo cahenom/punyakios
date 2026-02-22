@@ -198,7 +198,7 @@ export default function SuccessNotif({route}) {
               {renderDetailRow('Produk', responseData?.produk || item?.produk || product?.produk)}
               {renderDetailRow('SKU', responseData?.sku || item?.sku)}
               {renderDetailRow('Harga', formattedPrice)}
-              {renderDetailRow('Status', responseData?.message || item?.message)}
+              {renderDetailRow('Status', responseData?.status || item?.status)}
               {renderDetailRow('Waktu', getFormattedDate(responseData?.created_at || item?.created_at))}
               {renderDetailRow('Ref ID', responseData?.ref || responseData?.ref_id || item?.ref || item?.ref_id, true, () => onCopyValue(responseData?.ref || responseData?.ref_id || item?.ref || item?.ref_id, 'Ref ID'))}
             </View>
@@ -260,22 +260,12 @@ const styles = StyleSheet.create({
   receiptCard: {
     borderRadius: 24,
     paddingVertical: 30,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
     overflow: 'hidden',
   },
   secondaryCard: {
     borderRadius: 20,
     paddingVertical: 20,
     marginTop: 15,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
     paddingHorizontal: 25,
     overflow: 'hidden',
   },
@@ -406,11 +396,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     overflow: 'hidden',
   },
   actionButtonText: {

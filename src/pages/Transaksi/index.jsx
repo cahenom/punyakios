@@ -177,19 +177,19 @@ const Transaksi = () => {
     }
 
     const s = status.toLowerCase();
-    if (['berhasil', 'sukses', 'success', 'completed'].includes(s)) {
+    if (['berhasil', 'sukses', 'success', 'completed', 'paid', 'settled'].includes(s)) {
       return {
         bg: isDarkMode ? 'rgba(1, 193, 162, 0.15)' : 'rgba(1, 193, 162, 0.1)',
         text: '#01C1A2',
       };
     }
-    if (['gagal', 'failed', 'error', 'none'].includes(s)) {
+    if (['gagal', 'failed', 'error', 'none', 'expired'].includes(s)) {
       return {
         bg: isDarkMode ? 'rgba(239, 68, 68, 0.15)' : 'rgba(239, 68, 68, 0.1)',
         text: '#EF4444',
       };
     }
-    if (['pending', 'diproses', 'processing'].includes(s)) {
+    if (['pending', 'diproses', 'processing', 'pending_settlement'].includes(s)) {
       return {
         bg: isDarkMode ? 'rgba(245, 158, 11, 0.15)' : 'rgba(245, 158, 11, 0.1)',
         text: '#F59E0B',

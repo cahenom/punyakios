@@ -22,6 +22,7 @@ import SkeletonCard from '../../components/SkeletonCard';
 import BottomModal from '../../components/BottomModal';
 import TransactionDetail from '../../components/TransactionDetail';
 import { api } from '../../utils/api';
+import {useAuth} from '../../context/AuthContext';
 import { makeTopupCall } from '../../helpers/apiBiometricHelper';
 import CustomHeader from '../../components/CustomHeader';
 
@@ -76,6 +77,8 @@ export default function StreamingProduct({route, navigation}) {
 
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [usePoints, setUsePoints] = useState(false);
+  const {user} = useAuth();
 
   const validateInputs = () => {
     const errors = {};
@@ -102,6 +105,7 @@ export default function StreamingProduct({route, navigation}) {
       const response = await makeTopupCall({
         sku: selectItem.sku,
         customer_no: customer_no,
+        use_points: usePoints,
       }, `Verifikasi untuk berlangganan ${selectItem.name}`);
 
       setShowModal(false);
@@ -220,6 +224,9 @@ export default function StreamingProduct({route, navigation}) {
           onConfirm={confirmOrder}
           onCancel={() => setShowModal(false)}
           isLoading={isProcessing}
+          availablePoints={user?.points || 0}
+          usePoints={usePoints}
+          onTogglePoints={() => setUsePoints(!usePoints)}
         />
       </BottomModal>
     </SafeAreaView>
