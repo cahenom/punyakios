@@ -47,7 +47,8 @@ import {
   StreamingProduct,
   TransferPage,
   TransferAmountPage,
-  PointsRedeem
+  PointsRedeem,
+  QrisPayment
 } from '../pages';
 import Transaksi from '../pages/Transaksi';
 import {
@@ -404,6 +405,13 @@ function ProtectedRoute() {
       <Stack.Screen
         name="P2PScan"
         component={ScanScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="QrisPayment"
+        component={QrisPayment}
         options={{
           headerShown: false,
         }}

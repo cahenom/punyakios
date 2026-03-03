@@ -14,7 +14,6 @@ import React, {useState} from 'react';
 import {useAlert} from '../../context/AlertContext';
 import LinearGradient from 'react-native-linear-gradient';
 import {
-  API_URL,
   BLUE_COLOR,
   BOLD_FONT,
   DARK_BACKGROUND,
@@ -32,61 +31,60 @@ import {
   SHADOWS,
   MEDIUM_FONT,
 } from '../../utils/const';
-import {Eye, EyeCros} from '../../assets';
 import {api} from '../../utils/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useAuth} from '../../context/AuthContext';
-import {getFcmToken} from '../../utils/notifications';
-import CustomAlert from '../../components/CustomAlert';
+import {Eye, EyeCros} from '../../assets';
 
-export default function LoginPage({navigation}) {
-  const {login, setIsLoggedIn, setLoggedInState} = useAuth();
+export default function ResetPasswordPage({navigation, route}) {
+  const { email, token } = route.params;
   const isDarkMode = useColorScheme() === 'dark';
-  const [isSecure, setIsSecure] = useState(true);
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isSecure, setIsSecure] = useState(true);
+  const [isSecureConfirm, setIsSecureConfirm] = useState(true);
   const [loading, setLoading] = useState(false);
   const {showAlert} = useAlert();
 
-  const handleLogin = async () => {
+  const handleResetPassword = async () => {
     Keyboard.dismiss();
-    // Basic validation
-    if (!email || !password) {
-      showAlert('Error', 'Email dan password wajib diisi', 'error');
+    
+    if (!password || !confirmPassword) {
+      showAlert('Error', 'Semua field wajib diisi', 'error');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      showAlert('Error', 'Password konfirmasi tidak cocok', 'error');
+      return;
+    }
+
+    if (password.length < 6) {
+      showAlert('Error', 'Password minimal 6 karakter', 'error');
       return;
     }
 
     setLoading(true);
 
     try {
-      // Gunakan fungsi login baru yang full online
-      const result = await login(email, password);
-
-      if (result.success) {
-        showAlert('Success', 'Login berhasil', 'success');
-      } else {
-        // Jika ada error lain
-        setLoading(false);
-        showAlert('Login Gagal', result.error || 'Terjadi kesalahan saat login', 'error');
-      }
-    } catch (error) {
-      console.log('Login error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        config: error.config ? {
-          url: error.config.url,
-          method: error.config.method,
-          data: error.config.data
-        } : undefined
+      const response = await api.post('/api/auth/reset-password', {
+        email: email,
+        token: token,
+        password: password,
+        password_confirmation: confirmPassword,
       });
 
+      if (response.data?.status === 'success') {
+        showAlert('Success', 'Password berhasil diperbarui', 'success');
+        navigation.navigate('Login');
+      } else {
+        setLoading(false);
+        showAlert('Error', response.data?.message || 'Gagal reset password', 'error');
+      }
+    } catch (error) {
       setLoading(false);
       const errorMessage = error.response?.data?.message || error.message || 'Gagal terhubung ke server';
       showAlert('Error', errorMessage, 'error');
     }
   };
-
 
   return (
     <KeyboardAvoidingView
@@ -95,52 +93,36 @@ export default function LoginPage({navigation}) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}>
-        {/* Hero Section with Gradient */}
+        
         <LinearGradient
           colors={GRADIENTS.primary}
           start={{x: 0, y: 0}}
           end={{x: 1, y: 1}}
           style={styles.heroSection}>
-          <Text style={styles.heroTitle}>Selamat Datang</Text>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('Login')}
+            style={styles.backButton}>
+            <Text style={styles.backButtonText}>← Ke Login</Text>
+          </TouchableOpacity>
+          <Text style={styles.heroTitle}>Sandi Baru</Text>
           <Text style={styles.heroSubtitle}>
-            Masuk untuk melanjutkan transaksi Anda
+            Tentukan password baru untuk akun **{email}**.
           </Text>
         </LinearGradient>
 
-        {/* Login Card */}
         <View style={styles.cardContainer(isDarkMode)}>
           <View style={styles.formContainer}>
-            <Text style={styles.formTitle(isDarkMode)}>Login</Text>
-            
-            {/* Identifier Input (Email or Phone) */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel(isDarkMode)}>Email atau Nomor HP</Text>
-              <TextInput
-                style={styles.input(isDarkMode)}
-                placeholder="Email atau Nomor HP"
-                placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
-                value={email}
-                onChangeText={text => setEmail(text.trim())}
-                autoCapitalize="none"
-              />
-            </View>
-
             {/* Password Input */}
             <View style={styles.inputContainer}>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                <Text style={styles.inputLabel(isDarkMode)}>Password</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                  <Text style={[styles.registerLink, {fontSize: 12}]}>Lupa Password?</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.passwordContainer(isDarkMode)}>
+              <Text style={styles.inputLabel(isDarkMode)}>Password Baru</Text>
+              <View style={styles.passwordWrapper(isDarkMode)}>
                 <TextInput
                   style={styles.passwordInput(isDarkMode)}
-                  placeholder="Password"
+                  placeholder="Minimal 6 karakter"
                   placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
                   secureTextEntry={isSecure}
                   value={password}
-                  onChangeText={text => setPassword(text)}
+                  onChangeText={setPassword}
                 />
                 <TouchableOpacity
                   style={styles.eyeButton}
@@ -150,44 +132,44 @@ export default function LoginPage({navigation}) {
               </View>
             </View>
 
-            {/* Login Button */}
+            {/* Confirm Password Input */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel(isDarkMode)}>Konfirmasi Password Baru</Text>
+              <View style={styles.passwordWrapper(isDarkMode)}>
+                <TextInput
+                  style={styles.passwordInput(isDarkMode)}
+                  placeholder="Ulangi password baru"
+                  placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
+                  secureTextEntry={isSecureConfirm}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                />
+                <TouchableOpacity
+                  style={styles.eyeButton}
+                  onPress={() => setIsSecureConfirm(!isSecureConfirm)}>
+                  {isSecureConfirm ? <Eye /> : <EyeCros />}
+                </TouchableOpacity>
+              </View>
+            </View>
+
             <TouchableOpacity
-              style={styles.loginButtonContainer}
-              onPress={handleLogin}
+              style={styles.buttonContainer}
+              onPress={handleResetPassword}
               disabled={loading}
               activeOpacity={0.8}>
               <LinearGradient
                 colors={loading ? ['#94a3b8', '#64748b'] : GRADIENTS.primary}
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 0}}
-                style={styles.loginButton}>
-                <Text style={styles.loginButtonText}>
-                  {loading ? 'Loading...' : 'Login'}
+                style={styles.button}>
+                <Text style={styles.buttonText}>
+                  {loading ? 'Memproses...' : 'Reset Password'}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
-
-            {/* Divider */}
-            <View style={styles.dividerContainer}>
-              <View style={styles.divider(isDarkMode)} />
-              <Text style={styles.dividerText(isDarkMode)}>atau</Text>
-              <View style={styles.divider(isDarkMode)} />
-            </View>
-
-            {/* Register Link */}
-            <View style={styles.registerContainer}>
-              <Text style={styles.registerText(isDarkMode)}>
-                Belum punya akun?{' '}
-              </Text>
-              <TouchableOpacity 
-                onPress={() => navigation.navigate('Register')}
-                activeOpacity={0.7}>
-                <Text style={styles.registerLink}>Daftar Sekarang</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
-        </ScrollView>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -201,20 +183,29 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   heroSection: {
-    paddingTop: SPACING.xxxl * 2,
-    paddingBottom: SPACING.xxxl * 3,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: SPACING.xxxl * 2,
     paddingHorizontal: HORIZONTAL_MARGIN,
+  },
+  backButton: {
+    marginBottom: SPACING.lg,
+  },
+  backButtonText: {
+    color: WHITE_COLOR,
+    fontFamily: MEDIUM_FONT,
+    fontSize: 16,
   },
   heroTitle: {
     fontFamily: BOLD_FONT,
-    fontSize: 32,
+    fontSize: 28,
     color: WHITE_COLOR,
     marginBottom: SPACING.sm,
   },
   heroSubtitle: {
     fontFamily: REGULAR_FONT,
-    fontSize: 16,
+    fontSize: 14,
     color: 'rgba(255,255,255,0.9)',
+    lineHeight: 20,
   },
   cardContainer: isDarkMode => ({
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
@@ -230,12 +221,6 @@ const styles = StyleSheet.create({
   formContainer: {
     gap: SPACING.lg,
   },
-  formTitle: isDarkMode => ({
-    fontFamily: BOLD_FONT,
-    fontSize: 24,
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-    marginBottom: SPACING.md,
-  }),
   inputContainer: {
     gap: SPACING.sm,
   },
@@ -254,7 +239,7 @@ const styles = StyleSheet.create({
     color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
     backgroundColor: isDarkMode ? DARK_BACKGROUND : WHITE_BACKGROUND,
   }),
-  passwordContainer: isDarkMode => ({
+  passwordWrapper: isDarkMode => ({
     borderWidth: 1,
     borderColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
     borderRadius: BORDER_RADIUS.medium,
@@ -273,50 +258,19 @@ const styles = StyleSheet.create({
   eyeButton: {
     padding: SPACING.sm,
   },
-  loginButtonContainer: {
+  buttonContainer: {
     marginTop: SPACING.md,
     borderRadius: BORDER_RADIUS.medium,
     overflow: 'hidden',
   },
-  loginButton: {
+  button: {
     paddingVertical: SPACING.lg,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  loginButtonText: {
+  buttonText: {
     color: WHITE_COLOR,
     fontFamily: BOLD_FONT,
     fontSize: 16,
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: SPACING.xl,
-  },
-  divider: isDarkMode => ({
-    flex: 1,
-    height: 1,
-    backgroundColor: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-  }),
-  dividerText: isDarkMode => ({
-    marginHorizontal: SPACING.lg,
-    fontFamily: REGULAR_FONT,
-    fontSize: 12,
-    color: isDarkMode ? SLATE_COLOR : GREY_COLOR,
-  }),
-  registerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  registerText: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
-    fontSize: 14,
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
-  }),
-  registerLink: {
-    fontFamily: BOLD_FONT,
-    fontSize: 14,
-    color: BLUE_COLOR,
   },
 });

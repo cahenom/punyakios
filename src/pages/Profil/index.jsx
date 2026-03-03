@@ -675,7 +675,7 @@ export default function ProfilScreen({navigation}) {
               )}
             </View>
             <Text style={styles.profilePhone}>
-              {user?.email || 'user@example.com'}
+              {user?.phone || '08xxxxxxx'}
             </Text>
             <View style={[styles.badgeContainer, {flexDirection: 'row', alignItems: 'center', gap: 8}]}>
               <Text style={styles.badgeText}>

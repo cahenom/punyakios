@@ -212,7 +212,12 @@ export default function SuccessNotif({route}) {
             <View style={styles.keteranganHeader}>
               <Text style={styles.labelDetail(isDarkMode)}>Keterangan</Text>
               <TouchableOpacity 
-                onPress={() => onCopyValue(responseData?.sn || item?.sn || item?.serial_number || responseData?.serial_number, 'Keterangan')} 
+                onPress={() => {
+                  const snValue = responseData?.sn || item?.sn || item?.serial_number || responseData?.serial_number;
+                  const messageValue = responseData?.message || item?.message;
+                  const copyValue = (isFailed && (!snValue || snValue === '-')) ? messageValue : snValue;
+                  onCopyValue(copyValue, 'Keterangan');
+                }} 
                 activeOpacity={0.6}
               >
                 <View style={[styles.copyIcon, {backgroundColor: isDarkMode ? 'rgba(255,255,255,0.1)' : '#f1f5f9'}]}>
@@ -221,7 +226,17 @@ export default function SuccessNotif({route}) {
               </TouchableOpacity>
             </View>
             <Text style={styles.keteranganValue(isDarkMode)}>
-              {String(responseData?.sn || item?.sn || item?.serial_number || responseData?.serial_number || '-')}
+              {(() => {
+                const snValue = responseData?.sn || item?.sn || item?.serial_number || responseData?.serial_number || '-';
+                const messageValue = responseData?.message || item?.message || '-';
+                
+                // Jika gagal dan SN kosong/strip, tampilkan pesan errornya saja
+                if (isFailed && (snValue === '-' || !snValue)) {
+                  return String(messageValue);
+                }
+                
+                return String(snValue);
+              })()}
             </Text>
           </View>
 

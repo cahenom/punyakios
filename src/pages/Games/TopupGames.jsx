@@ -86,37 +86,19 @@ export default function TopupGames({route}) {
       // Close confirmation modal
       setShowModal(false);
 
-      // Check if transaction is successful or pending/processing
-      const status = (response?.status || 'Berhasil').toLowerCase();
-      // Include pending statuses as "successful initiations" to show the animation
-      const isSuccessOrPending = !['gagal', 'failed', 'error', 'none'].includes(status);
-
-      // Navigate to TransactionResult for successful or pending initiations
-      if (isSuccessOrPending) {
-        navigation.navigate('TransactionResult', {
-          item: {
-            ...response,
-            customer_no: customer_no
-          },
-          product: {
-            ...selectItem,
-            product_name: selectItem?.name || selectItem?.label,
-            product_seller_price: selectItem?.price
-          },
-        });
-      } else {
-        navigation.navigate('SuccessNotif', {
-          item: {
-            ...response,
-            customer_no: customer_no
-          },
-          product: {
-            ...selectItem,
-            product_name: selectItem?.name || selectItem?.label,
-            product_seller_price: selectItem?.price
-          },
-        });
-      }
+      // Always navigate to TransactionResult regardless of status (success, pending, or gagal)
+      // TransactionResult will handle the appropriate animation and then redirect to SuccessNotif
+      navigation.navigate('TransactionResult', {
+        item: {
+          ...response,
+          customer_no: customer_no
+        },
+        product: {
+          ...selectItem,
+          product_name: selectItem?.name || selectItem?.label,
+          product_seller_price: selectItem?.price
+        },
+      });
     } catch (error) {
       console.error('Topup error:', error);
       setShowModal(false);

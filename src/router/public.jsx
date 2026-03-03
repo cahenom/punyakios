@@ -3,7 +3,7 @@ import {useState, useEffect} from 'react';
 import {ActivityIndicator, View, useColorScheme} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {LoginPage, RegisterPage, OnboardingScreen} from '../pages';
+import {LoginPage, RegisterPage, OnboardingScreen, ForgotPasswordPage, ResetPasswordPage, VerifyOtpPage} from '../pages';
 import {DARK_BACKGROUND, BLUE_COLOR} from '../utils/const';
 
 const Stack = createNativeStackNavigator();
@@ -61,6 +61,27 @@ function PublicRoute() {
       <Stack.Screen
         name="Register"
         component={RegisterPage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordPage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="ResetPassword"
+        component={ResetPasswordPage}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="VerifyOtp"
+        component={VerifyOtpPage}
         options={{
           headerShown: false,
         }}

@@ -28,6 +28,9 @@ import Streaming from './Streaming';
 import StreamingProduct from './Streaming/streamingProduct';
 import LoginPage from './Auth/login';
 import RegisterPage from './Auth/register';
+import ForgotPasswordPage from './Auth/ForgotPassword';
+import ResetPasswordPage from './Auth/ResetPassword';
+import VerifyOtpPage from './Auth/VerifyOtp';
 import ProfilScreen from './Profil';
 import SettingsScreen from './Settings';
 import LihatSemuaScreen from './LihatSemua';
@@ -46,6 +49,7 @@ import ScanScreen from './Scan';
 import TransferPage from './Transfer';
 import TransferAmountPage from './Transfer/TransferAmount';
 import PointsRedeem from './Profil/PointsRedeem';
+import QrisPayment from './Scan/QrisPayment';
 
 export {
   HomeScreen,
@@ -78,6 +82,9 @@ export {
   StreamingProduct,
   LoginPage,
   RegisterPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  VerifyOtpPage,
   ProfilScreen,
   SettingsScreen,
   LihatSemuaScreen,
@@ -95,5 +102,6 @@ export {
   ScanScreen,
   TransferPage,
   TransferAmountPage,
-  PointsRedeem
+  PointsRedeem,
+  QrisPayment
 };

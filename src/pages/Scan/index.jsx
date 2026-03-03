@@ -11,6 +11,7 @@ import {
   Linking,
   Dimensions,
 } from 'react-native';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import CustomHeader from '../../components/CustomHeader';
 import {
   BOLD_FONT,
@@ -34,21 +35,40 @@ import {
   useCodeScanner,
   useCameraPermission,
 } from 'react-native-vision-camera';
+import {launchImageLibrary} from 'react-native-image-picker';
+import jsQR from 'jsqr';
+import {Buffer} from 'buffer';
+import jpeg from 'jpeg-js';
 
 import {useAlert} from '../../context/AlertContext';
 import {useAuth} from '../../context/AuthContext';
 import QRCode from 'react-native-qrcode-svg';
 import {api} from '../../utils/api';
+import {parseQRIS} from '../../utils/qrisParser';
 
 const {width} = Dimensions.get('window');
 
 export default function ScanScreen({navigation, route}) {
+  const isFocused = useIsFocused();
   const isDarkMode = useColorScheme() === 'dark';
   const {showAlert} = useAlert();
   const {user} = useAuth();
   const {hasPermission, requestPermission} = useCameraPermission();
   const [isActive, setIsActive] = useState(true);
+  const [torch, setTorch] = useState(false);
+  const [isGalleryLoading, setIsGalleryLoading] = useState(false);
   
+  // Reset camera activity when screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsActive(true);
+      return () => {
+        setIsActive(false);
+        setTorch(false);
+      };
+    }, [])
+  );
+
   // Tab Mode: Opened from Bottom Tab (Route name: 'Scan')
   // P2P Mode: Opened from Stack (Route name: 'P2PScan')
   const isTabMode = route.name === 'Scan';
@@ -84,22 +104,76 @@ export default function ScanScreen({navigation, route}) {
     }
   };
 
+  const processQRValue = (value) => {
+    console.log('Processing QR value:', value);
+    
+    // 1. PunyaKios Transfer Format: PUNYAKIOS:TRANSFER:PHONE_NUMBER
+    if (value.startsWith('PUNYAKIOS:TRANSFER:')) {
+      const phone = value.split(':')[2];
+      handleTranserScan(phone);
+      return true;
+    } 
+    // 2. EMVCo QRIS Format: Starts with 000201
+    else if (value.startsWith('00')) {
+      const qrisData = parseQRIS(value);
+      if (qrisData) {
+        setIsActive(false);
+        navigation.navigate('QrisPayment', { qrisData });
+        return true;
+      }
+    }
+    
+    // Default fallback
+    setIsActive(false);
+    showAlert('QR Scanned', `Scanned: ${value}`, 'info');
+    setTimeout(() => setIsActive(true), 3000);
+    return false;
+  };
+
+  const handleGalleryScan = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      includeBase64: true,
+      quality: 0.5, 
+      maxWidth: 600, 
+      maxHeight: 600,
+    });
+
+    if (result.didCancel || !result.assets || result.assets.length === 0) {
+      return;
+    }
+
+    setIsGalleryLoading(true);
+    const asset = result.assets[0];
+    if (!asset.base64) {
+      showAlert('Error', 'Gagal membaca data gambar', 'error');
+      return;
+    }
+
+    try {
+      const buffer = Buffer.from(asset.base64, 'base64');
+      const rawImageData = jpeg.decode(buffer, {useTArray: true});
+      
+      const code = jsQR(rawImageData.data, rawImageData.width, rawImageData.height);
+
+      if (code && code.data) {
+        processQRValue(code.data);
+      } else {
+        showAlert('Error', 'Tidak ditemukan kode QR pada gambar tersebut. Pastikan gambar cukup jelas dan berformat JPEG.', 'error');
+      }
+    } catch (error) {
+      console.log('Gallery scan error:', error);
+      showAlert('Error', 'Gagal memproses gambar. Pastikan format gambar didukung (JPEG).', 'error');
+    } finally {
+      setIsGalleryLoading(false);
+    }
+  };
+
   const codeScanner = useCodeScanner({
     codeTypes: ['qr'],
     onCodeScanned: codes => {
       if (codes.length > 0 && codes[0].value) {
-        const value = codes[0].value;
-        console.log('QR Code scanned:', value);
-        
-        // PunyaKios Transfer Format: PUNYAKIOS:TRANSFER:PHONE_NUMBER
-        if (value.startsWith('PUNYAKIOS:TRANSFER:')) {
-          const phone = value.split(':')[2];
-          handleTranserScan(phone);
-        } else {
-          setIsActive(false);
-          showAlert('QR Scanned', `Scanned: ${value}`, 'info');
-          setTimeout(() => setIsActive(true), 3000);
-        }
+        processQRValue(codes[0].value);
       }
     },
   });
@@ -200,15 +274,31 @@ export default function ScanScreen({navigation, route}) {
         <Camera
           style={StyleSheet.absoluteFill}
           device={device}
-          isActive={isActive && activeTab === 'scan'}
+          isActive={isActive && isFocused && activeTab === 'scan'}
           codeScanner={codeScanner}
+          torch={torch ? 'on' : 'off'}
           photo={false}
           video={false}
         />
         
         {/* Overlay Scanner */}
         <View style={styles.overlay}>
-          <View style={styles.unfocusedContainer} />
+          <View style={styles.unfocusedContainer}>
+            {/* Control Buttons at the top */}
+            <View style={styles.controlButtons}>
+              <TouchableOpacity 
+                style={[styles.controlButton, torch && styles.controlButtonActive]}
+                onPress={() => setTorch(!torch)}>
+                <Text style={styles.controlButtonText}>{torch ? '🔦 Nyala' : '🔦 Senter'}</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.controlButton}
+                onPress={handleGalleryScan}>
+                <Text style={styles.controlButtonText}>🖼️ Galeri</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           <View style={styles.middleContainer}>
             <View style={styles.unfocusedContainer} />
             <View style={styles.focusedContainer}>
@@ -223,6 +313,13 @@ export default function ScanScreen({navigation, route}) {
             <Text style={styles.scanText}>Posisikan QR code di dalam kotak</Text>
           </View>
         </View>
+
+        {isGalleryLoading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color={BLUE_COLOR} />
+            <Text style={styles.loadingText}>Membaca QR...</Text>
+          </View>
+        )}
 
         <CustomHeader 
           title={headerTitle} 
@@ -321,6 +418,28 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     textAlign: 'center',
   },
+  controlButtons: {
+    flexDirection: 'row',
+    gap: 20,
+    marginTop: 100, // Adjusted for Header
+  },
+  controlButton: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  controlButtonActive: {
+    backgroundColor: BLUE_COLOR,
+    borderColor: WHITE_COLOR,
+  },
+  controlButtonText: {
+    color: 'white',
+    fontFamily: MEDIUM_FONT,
+    fontSize: 14,
+  },
   emptyCard: isDarkMode => ({
     backgroundColor: isDarkMode ? '#1a2332' : '#ffffff',
     borderRadius: BORDER_RADIUS.large,
@@ -348,6 +467,19 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: SPACING.xl,
   }),
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  loadingText: {
+    color: 'white',
+    marginTop: 15,
+    fontFamily: MEDIUM_FONT,
+    fontSize: 16,
+  },
   button: {
     backgroundColor: BLUE_COLOR,
     paddingHorizontal: 24,
