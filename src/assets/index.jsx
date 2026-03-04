@@ -10,6 +10,16 @@ import VoucherIkon from './images/svg/voucher-icon.svg';
 import BPJSIkon from './images/svg/bpjs-icon.svg';
 import PDAMIkon from './images/svg/pdam-icon.svg';
 import InternetIkon from './images/svg/internet-icon.svg';
+import DataIkon from './images/svg/data-icon.svg';
+import SMSIkon from './images/svg/sms-icon.svg';
+import MasaAktifIkon from './images/svg/masaaktif-icon.svg';
+import IndosatIkon from './images/svg/indosat-icon.svg';
+import StreamingIkon from './images/svg/streaming-icon.svg';
+import MoreIkon from './images/svg/more-icon.svg';
+import FlashlightIkon from './images/svg/flashlight-icon.svg';
+import GalleryIkon from './images/svg/gallery-icon.svg';
+import TransferIkon from './images/svg/transfer-icon.svg';
+import QrisPayIkon from './images/svg/qris-pay-icon.svg';
 
 // UI icons (SVG)
 import BellIkon from './images/svg/bell-icon.svg';
@@ -30,8 +40,11 @@ import PromoActive from './images/svg/promo-active.svg';
 import PromoDefault from './images/svg/promo-default.svg';
 import ScanIcon from './images/svg/scan-icon.svg';
 
+import UserPerson from './images/svg/user-person.svg';
+
 export {
   HeaderBG,
+  UserPerson,
   BellIkon,
   SendIkon,
   AddIkon,
@@ -58,4 +71,14 @@ export {
   PromoActive,
   PromoDefault,
   ScanIcon,
+  DataIkon,
+  SMSIkon,
+  MasaAktifIkon,
+  IndosatIkon,
+  StreamingIkon,
+  MoreIkon,
+  FlashlightIkon,
+  GalleryIkon,
+  TransferIkon,
+  QrisPayIkon,
 };

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="512" cy="512" r="512" fill="#3D5AFE" />
+  <path d="M220 320h180l90 200 90-200h180v380H620V480l-84 140h-48l-84-140v244H220V320z" fill="#FFEA00" />
+  <path d="M740 320h60v380h-140c-30 0-50-20-50-50V540c0-30 20-50 50-50h80V320z" fill="#FFFFFF" fill-opacity="0.9" />
+</svg>

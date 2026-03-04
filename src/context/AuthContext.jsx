@@ -84,12 +84,20 @@ const AuthProvider = ({children}) => {
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem('token');
-    await AsyncStorage.removeItem('refresh_token');
-    await AsyncStorage.removeItem('user');
-    setAuthToken(null);
-    setIsLoggedIn(false);
-    setUser(null);
+    try {
+      // Call the API logout endpoint
+      await api.post('/api/auth/logout');
+    } catch (error) {
+      console.warn('Server-side logout failed:', error?.message || error);
+    } finally {
+      // Always clear local storage and reset state
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('refresh_token');
+      await AsyncStorage.removeItem('user');
+      setAuthToken(null);
+      setIsLoggedIn(false);
+      setUser(null);
+    }
   };
 
   // Function to update login state manually when user logs in

@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     height: 54, // Fixed height for stability
     justifyContent: 'center',
-    ...(isFocused ? SHADOWS.small : {}),
     zIndex: 1,
   }),
   errorBorder: {

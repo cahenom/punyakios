@@ -4,6 +4,7 @@ import { API_URL } from './const';
 import { Alert } from './alert';
 import { Platform } from 'react-native';
 import { version as appVersion } from '../../package.json';
+import CryptoJS from 'crypto-js';
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -11,12 +12,14 @@ export const api = axios.create({
 });
 
 let authToken = null;
+let deviceId = null;
 
 export const setAuthToken = (token) => {
   authToken = token;
 };
 
 api.interceptors.request.use(async config => {
+  // 1. Get Auth Token
   if (!authToken) {
     authToken = await AsyncStorage.getItem('token');
   }
@@ -24,9 +27,31 @@ api.interceptors.request.use(async config => {
     config.headers.Authorization = 'Bearer ' + authToken;
   }
   
-  // Add App Version and Platform headers
+  // 2. Get/Create Device ID
+  if (!deviceId) {
+    deviceId = await AsyncStorage.getItem('device_id');
+    if (!deviceId) {
+      deviceId = 'DPK-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      await AsyncStorage.setItem('device_id', deviceId);
+    }
+  }
+
+  // 3. Security Headers
+  const timestamp = Math.floor(Date.now() / 1000);
+  const method = (config.method || 'GET').toUpperCase();
+  // Ensure path matches Laravel's $request->path() (usually no leading slash)
+  const path = (config.url || '').replace(/^\//, '');
+  const payload = config.data ? JSON.stringify(config.data) : '';
+  
+  const secret = 'PunyaKiosSecretKey2026!';
+  const dataToSign = `${method}|${path}|${timestamp}|${payload}`;
+  const signature = CryptoJS.HmacSHA256(dataToSign, secret).toString(CryptoJS.enc.Hex);
+
   config.headers['X-App-Version'] = appVersion;
   config.headers['X-App-Platform'] = Platform.OS;
+  config.headers['X-Device-ID'] = deviceId;
+  config.headers['X-Timestamp'] = timestamp;
+  config.headers['X-Signature'] = signature;
   
   return config;
 });

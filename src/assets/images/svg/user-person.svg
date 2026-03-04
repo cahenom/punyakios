@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="800px" height="800px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 512m-480 0a480 480 0 1 0 960 0 480 480 0 1 0-960 0Z" fill="#E9F5FF" />
+  <path d="M512 576c141.4 0 256 114.6 256 256v64H256v-64c0-141.4 114.6-256 256-256z" fill="#3B82F6" />
+  <circle cx="512" cy="384" r="160" fill="#3B82F6" />
+  <path d="M512 320c-35.3 0-64 28.7-64 64s28.7 64 64 64 64-28.7 64-64-28.7-64-64-64z" fill="#FFFFFF" opacity="0.3" />
+</svg>

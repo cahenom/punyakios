@@ -48,7 +48,11 @@ import {
   TransferPage,
   TransferAmountPage,
   PointsRedeem,
-  QrisPayment
+  QrisPayment,
+  Sms,
+  TypeSms,
+  TopupSms,
+  TermsConditions,
 } from '../pages';
 import Transaksi from '../pages/Transaksi';
 import {
@@ -412,6 +416,34 @@ function ProtectedRoute() {
       <Stack.Screen
         name="QrisPayment"
         component={QrisPayment}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Sms"
+        component={Sms}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="TypeSms"
+        component={TypeSms}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="TopupSms"
+        component={TopupSms}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="TermsConditions"
+        component={TermsConditions}
         options={{
           headerShown: false,
         }}

@@ -50,6 +50,10 @@ import TransferPage from './Transfer';
 import TransferAmountPage from './Transfer/TransferAmount';
 import PointsRedeem from './Profil/PointsRedeem';
 import QrisPayment from './Scan/QrisPayment';
+import Sms from './Sms';
+import TypeSms from './Sms/typeSms';
+import TopupSms from './Sms/topupSms';
+import TermsConditions from './TermsConditions';
 
 export {
   HomeScreen,
@@ -98,10 +102,15 @@ export {
   HelpCenter,
   PrivacyPolicy,
   OnboardingScreen,
+  OnboardingScreen as Onboarding, // alias for consistency
   PromoScreen,
   ScanScreen,
   TransferPage,
   TransferAmountPage,
   PointsRedeem,
-  QrisPayment
+  QrisPayment,
+  Sms,
+  TypeSms,
+  TopupSms,
+  TermsConditions,
 };

@@ -9,6 +9,11 @@ import {
   SendIkon,
   TvIkon,
   VoucherIkon,
+  DataIkon,
+  SMSIkon,
+  MasaAktifIkon,
+  IndosatIkon,
+  StreamingIkon,
 } from '../assets';
 
 export const mainmenus = [
@@ -19,12 +24,12 @@ export const mainmenus = [
   },
   {
     label: 'Paket Data',
-    ikon: HandphoneIkon,
+    ikon: DataIkon,
     path: 'DataPackage',
   },
   {
     label: 'Indosat',
-    ikon: HandphoneIkon,
+    ikon: IndosatIkon,
     path: 'Indosat',
   },
   {
@@ -44,7 +49,7 @@ export const mainmenus = [
   },
   {
     label: 'Masa Aktif',
-    ikon: HandphoneIkon, // Using existing icon temporarily
+    ikon: MasaAktifIkon,
     path: 'MasaAktif',
   },
   {
@@ -74,7 +79,12 @@ export const mainmenus = [
   },
   {
     label: 'Streaming',
-    ikon: TvIkon,
+    ikon: StreamingIkon,
     path: 'Streaming',
+  },
+  {
+    label: 'SMS',
+    ikon: SMSIkon,
+    path: 'Sms',
   },
 ];

@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import {Alert} from '../../utils/alert';
 import React, {useState, useEffect, useCallback} from 'react';
-import {Eye, EyeCros, CheckProduct} from '../../assets';
+import {Eye, EyeCros, CheckProduct, UserPerson} from '../../assets';
 import CustomHeader from '../../components/CustomHeader';
 import {useFocusEffect} from '@react-navigation/native';
 import {
@@ -388,11 +388,7 @@ export default function ProfilScreen({navigation}) {
           try {
             // Call the logout function from context
             await logout();
-            // Navigate to login screen after logout
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'Login'}],
-            });
+            // Auth state change will automatically trigger Router to show PublicRoute (Login)
           } catch (error) {
             console.error('Logout error:', error);
             Alert.alert('Error', 'Gagal logout. Silakan coba lagi.');
@@ -402,21 +398,21 @@ export default function ProfilScreen({navigation}) {
     ]);
   };
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
+  const onRefresh = useCallback(async (silent = false) => {
+    if (!silent) setRefreshing(true);
     try {
       await refreshUserProfile();
     } catch (error) {
       console.error('Failed to refresh user profile:', error);
     } finally {
-      setRefreshing(false);
+      if (!silent) setRefreshing(false);
     }
   }, [refreshUserProfile]);
 
   // Auto-refresh when screen is focused
   useFocusEffect(
     useCallback(() => {
-      onRefresh();
+      onRefresh(true);
     }, [onRefresh])
   );
 
@@ -449,14 +445,14 @@ export default function ProfilScreen({navigation}) {
       position: 'relative',
       overflow: 'hidden',
     },
-    profileCardBackground: {
+    profileCardDecor: {
       position: 'absolute',
       top: 0,
       left: 0,
-      width: '100%',
-      height: 96, // h-24
-      backgroundColor: '#1d4ed8', // from-primary/10
-      opacity: 0.1,
+      right: 0,
+      height: 120, // Full top area
+      backgroundColor: BLUE_COLOR,
+      opacity: 0.1, // Subtle
     },
     profileCardContent: {
       zIndex: 10,
@@ -608,19 +604,18 @@ export default function ProfilScreen({navigation}) {
       marginBottom: 30,
     },
     logoutButton: {
-      backgroundColor: '#fee2e2', // red-50
-      opacity: isDarkMode ? 0.1 : 1,
-      padding: 14, // py-3.5
-      borderRadius: 12, // rounded-xl
+      backgroundColor: isDarkMode ? 'rgba(239, 68, 68, 0.1)' : '#fee2e2',
+      padding: 14,
+      borderRadius: 12,
       alignItems: 'center',
       flexDirection: 'row',
       justifyContent: 'center',
       gap: 8,
       borderWidth: 1,
-      borderColor: '#fecaca', // red-100
+      borderColor: isDarkMode ? 'rgba(239, 68, 68, 0.3)' : '#fecaca',
     },
     logoutButtonText: {
-      color: '#dc2626', // red-600
+      color: isDarkMode ? '#f87171' : '#dc2626',
       fontFamily: BOLD_FONT,
       fontSize: FONT_NORMAL,
     },
@@ -647,7 +642,7 @@ export default function ProfilScreen({navigation}) {
         }>
 
       <View style={styles.profileCard}>
-        <View style={styles.profileCardBackground} />
+        <View style={styles.profileCardDecor} />
         <View style={styles.profileCardContent}>
           <View
             style={[
@@ -658,9 +653,7 @@ export default function ProfilScreen({navigation}) {
                 alignItems: 'center',
               },
             ]}>
-            <Text style={styles.profileAvatarText}>
-              {user?.name?.charAt(0) || 'U'}
-            </Text>
+            <UserPerson width={90} height={90} />
           </View>
           <View style={styles.profileTextContainer}>
             <View style={styles.profileNameWrapper}>
@@ -677,17 +670,20 @@ export default function ProfilScreen({navigation}) {
             <Text style={styles.profilePhone}>
               {user?.phone || '08xxxxxxx'}
             </Text>
-            <View style={[styles.badgeContainer, {flexDirection: 'row', alignItems: 'center', gap: 8}]}>
-              <Text style={styles.badgeText}>
-                {isBalanceVisible
-                  ? `Rp ${user?.saldo ? parseFloat(user.saldo).toLocaleString() : '0'}`
-                  : 'Rp ••••••'}
-              </Text>
-              <TouchableOpacity onPress={toggleBalanceVisibility} activeOpacity={0.7}>
+            <View style={[styles.badgeContainer, {flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 8, paddingHorizontal: 16, backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.8)' : '#f8fafc', borderColor: dividerColor, borderWidth: 1}]}>
+              <View style={{flex: 1}}>
+                <Text style={{fontSize: 10, color: secondaryTextColor, marginBottom: 2}}>Main Balance</Text>
+                <Text style={[styles.badgeText, {fontSize: 18, color: textColor, letterSpacing: 0.5}]}>
+                  {isBalanceVisible
+                    ? `Rp ${user?.saldo ? parseFloat(user.saldo).toLocaleString() : '0'}`
+                    : 'Rp ••••••'}
+                </Text>
+              </View>
+              <TouchableOpacity onPress={toggleBalanceVisibility} activeOpacity={0.7} style={{padding: 8, backgroundColor: isDarkMode ? '#334155' : '#eff6ff', borderRadius: 8}}>
                 {isBalanceVisible ? (
-                  <Eye width={16} height={16} fill={isDarkMode ? '#93c5fd' : '#1d4ed8'} />
+                  <Eye width={20} height={20} fill={isDarkMode ? '#94a3b8' : '#3b82f6'} />
                 ) : (
-                  <EyeCros width={16} height={16} fill={isDarkMode ? '#93c5fd' : '#1d4ed8'} />
+                  <EyeCros width={20} height={20} fill={isDarkMode ? '#94a3b8' : '#3b82f6'} />
                 )}
               </TouchableOpacity>
             </View>
@@ -696,16 +692,17 @@ export default function ProfilScreen({navigation}) {
       </View>
 
       <View style={styles.quickActionsGrid}>
-        <TouchableOpacity style={styles.quickActionItem}>
-          <Text style={styles.quickActionText}>Verify ID</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.quickActionItem}>
-          <Text style={styles.quickActionText}>Support</Text>
+        <TouchableOpacity 
+          style={styles.quickActionItem}
+          onPress={() => navigation.navigate('HelpCenter')}>
+          <Text style={[styles.quickActionText, {color: isDarkMode ? '#f1f5f9' : '#1e293b'}]}>Help Center</Text>
+          <Text style={{fontSize: 10, color: secondaryTextColor, marginTop: 2}}>Need help?</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.quickActionItem}
           onPress={() => navigation.navigate('P2PScan', {tab: 'myqr'})}>
-          <Text style={styles.quickActionText}>My QR</Text>
+          <Text style={[styles.quickActionText, {color: isDarkMode ? '#f1f5f9' : '#1e293b'}]}>My QR Code</Text>
+          <Text style={{fontSize: 10, color: secondaryTextColor, marginTop: 2}}>Show QR</Text>
         </TouchableOpacity>
       </View>
 
@@ -810,6 +807,13 @@ export default function ProfilScreen({navigation}) {
           style={styles.listItem}
           onPress={() => navigation.navigate('HelpCenter')}>
           <Text style={styles.listItemText}>Help Center</Text>
+          <Text style={styles.chevronText}>›</Text>
+        </TouchableOpacity>
+        <View style={styles.divider} />
+        <TouchableOpacity
+          style={styles.listItem}
+          onPress={() => navigation.navigate('TermsConditions')}>
+          <Text style={styles.listItemText}>Terms & Conditions</Text>
           <Text style={styles.chevronText}>›</Text>
         </TouchableOpacity>
         <View style={styles.divider} />

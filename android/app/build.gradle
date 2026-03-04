@@ -97,6 +97,28 @@ android {
         versionCode appVersionCode
         versionName appVersion
     }
+
+    flavorDimensions "version"
+    productFlavors {
+        user {
+            dimension "version"
+            applicationId "com.saldoplus.plus"
+            resValue "string", "app_name", "Punya Kios"
+            buildConfigField "String", "APP_FLAVOR", "\"user\""
+        }
+        admin {
+            dimension "version"
+            applicationId "com.saldoplus.plus"
+            resValue "string", "app_name", "Punya Kios Admin"
+            buildConfigField "String", "APP_FLAVOR", "\"admin\""
+        }
+        merchant {
+            dimension "version"
+            applicationId "com.saldoplus.plus"
+            resValue "string", "app_name", "Punya Kios Merchant"
+            buildConfigField "String", "APP_FLAVOR", "\"merchant\""
+        }
+    }
     packaging {
         jniLibs {
             useLegacyPackaging = false

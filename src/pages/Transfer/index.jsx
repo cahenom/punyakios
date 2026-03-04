@@ -17,7 +17,7 @@ import {
   LIGHT_COLOR,
   WHITE_BACKGROUND,
 } from '../../utils/const';
-import {UserDefault, ScanIcon} from '../../assets';
+import {UserDefault, TransferIkon, QrisPayIkon} from '../../assets';
 import Input from '../../components/form/Input';
 import CustomHeader from '../../components/CustomHeader';
 import ModernButton from '../../components/ModernButton';
@@ -147,7 +147,7 @@ export default function TransferPage({navigation}) {
                   borderWidth: 1,
                   borderColor: isDarkMode ? '#334155' : '#dbeafe',
                 }}>
-                <ScanIcon width={24} height={24} color={BLUE_COLOR} />
+                <QrisPayIkon width={24} height={24} />
               </TouchableOpacity>
             </View>
           </View>

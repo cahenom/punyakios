@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.large,
     padding: SPACING.xxxl,
     alignItems: 'center',
-    ...SHADOWS.medium,
   }),
   emptyEmoji: {
     fontSize: 64,

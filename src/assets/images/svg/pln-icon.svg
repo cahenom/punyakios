@@ -1,3 +1,6 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13 2L4 14H11L10 22L20 10H13L13 2Z" fill="#1e0bff"/>
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="512" cy="512" r="512" fill="#DEFCF9" />
+  <path d="M640 100L220 580h240L320 924l504-544H560L640 100z" fill="#18DFB7" />
+  <path d="M530 280L312 520h238l-100 280 300-350H502V280z" fill="#FFFFFF" fill-opacity="0.7" />
 </svg>

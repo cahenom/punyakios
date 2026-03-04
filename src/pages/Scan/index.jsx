@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import CustomHeader from '../../components/CustomHeader';
+import { FlashlightIkon, GalleryIkon } from '../../assets';
 import {
   BOLD_FONT,
   REGULAR_FONT,
@@ -213,7 +214,7 @@ export default function ScanScreen({navigation, route}) {
               <QRCode
                 value={`PUNYAKIOS:TRANSFER:${user?.phone}`}
                 size={width * 0.6}
-                color={isDarkMode ? '#ffffff' : '#000000'}
+                color="#000000"
                 backgroundColor="transparent"
               />
             </View>
@@ -283,20 +284,26 @@ export default function ScanScreen({navigation, route}) {
         
         {/* Overlay Scanner */}
         <View style={styles.overlay}>
-          <View style={styles.unfocusedContainer}>
+          <View style={[styles.unfocusedContainer, {justifyContent: 'flex-start'}]}>
             {/* Control Buttons at the top */}
-            <View style={styles.controlButtons}>
-              <TouchableOpacity 
-                style={[styles.controlButton, torch && styles.controlButtonActive]}
-                onPress={() => setTorch(!torch)}>
-                <Text style={styles.controlButtonText}>{torch ? '🔦 Nyala' : '🔦 Senter'}</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={styles.controlButton}
-                onPress={handleGalleryScan}>
-                <Text style={styles.controlButtonText}>🖼️ Galeri</Text>
-              </TouchableOpacity>
+            <View style={styles.topCard}>
+              <View style={styles.controlButtons}>
+                <TouchableOpacity 
+                  style={styles.iconControlButton}
+                  onPress={() => setTorch(!torch)}>
+                  <FlashlightIkon width={20} height={20} style={{opacity: torch ? 1 : 0.7}} />
+                  <Text style={styles.iconControlButtonText}>{torch ? 'Nyala' : 'Senter'}</Text>
+                </TouchableOpacity>
+                
+                <View style={styles.verticalDivider} />
+
+                <TouchableOpacity 
+                  style={styles.iconControlButton}
+                  onPress={handleGalleryScan}>
+                  <GalleryIkon width={20} height={20} style={{opacity: 0.7}} />
+                  <Text style={styles.iconControlButtonText}>Galeri</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
           <View style={styles.middleContainer}>
@@ -418,27 +425,35 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     textAlign: 'center',
   },
+  topCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    width: '100%',
+    marginTop: 75,
+    paddingVertical: 10, // Slimmer card
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
   controlButtons: {
     flexDirection: 'row',
-    gap: 20,
-    marginTop: 100, // Adjusted for Header
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  controlButton: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
+  verticalDivider: {
+    width: 1,
+    height: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    marginHorizontal: 35, // Increased spacing
+  },
+  iconControlButton: {
+    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.3)',
   },
-  controlButtonActive: {
-    backgroundColor: BLUE_COLOR,
-    borderColor: WHITE_COLOR,
-  },
-  controlButtonText: {
+  iconControlButtonText: {
     color: 'white',
-    fontFamily: MEDIUM_FONT,
-    fontSize: 14,
+    fontFamily: REGULAR_FONT,
+    fontSize: 10, // Slightly smaller text
+    marginTop: 4,
+    opacity: 0.7,
   },
   emptyCard: isDarkMode => ({
     backgroundColor: isDarkMode ? '#1a2332' : '#ffffff',

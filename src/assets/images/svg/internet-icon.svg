@@ -1,7 +1,7 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="12" cy="12" r="10" fill="#1e0bff"/>
-<ellipse cx="12" cy="12" rx="4" ry="10" stroke="white" stroke-width="1.5"/>
-<path d="M2 12H22" stroke="white" stroke-width="1.5"/>
-<path d="M4 7H20" stroke="white" stroke-width="1"/>
-<path d="M4 17H20" stroke="white" stroke-width="1"/>
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="800px" height="800px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 512m-480 0a480 480 0 1 0 960 0 480 480 0 1 0-960 0Z" fill="#DEFCF9" />
+  <circle cx="512" cy="512" r="384" stroke="#18DFB7" stroke-width="64" fill="none" />
+  <path d="M128 512h768M512 128v768" stroke="#18DFB7" stroke-width="32" />
+  <path d="M512 128c192 0 256 192 256 384s-64 384-256 384-256-192-256-384 64-384 256-384z" stroke="#18DFB7" stroke-width="32" fill="none" />
 </svg>

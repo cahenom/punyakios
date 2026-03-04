@@ -23,33 +23,47 @@ export default function PrivacyPolicy({navigation}) {
 
   const policySections = [
     {
-      title: '1. Pengumpulan Informasi',
-      content: 'Kami mengumpulkan informasi yang Anda berikan secara langsung kepada kami saat mendaftar akun, melakukan transaksi, atau menghubungi layanan pelanggan. Informasi ini mencakup nama, alamat email, nomor telepon, dan data transaksi.',
+      title: '1. Pengumpulan dan Penggunaan Data Pribadi',
+      content: 'PunyaKios mengumpulkan Data Pribadi yang Anda berikan secara langsung, data yang dikumpulkan saat Anda menggunakan Layanan, serta data yang kami peroleh dari sumber lain. Ini mencakup data identitas, data kontak, informasi perangkat (IMEI, Alamat IP), dan data lokasi untuk kepatuhan terhadap regulasi dan pencegahan penipuan.',
     },
     {
-      title: '2. Penggunaan Informasi',
-      content: 'Informasi yang kami kumpulkan digunakan untuk memproses transaksi Anda, mengelola akun Anda, meningkatkan layanan kami, dan mengirimkan informasi penting terkait akun atau transaksi Anda.',
+      title: '2. Penggunaan Informasi untuk Layanan Finansial',
+      content: 'Kami menggunakan Data Pribadi untuk: (a) Memproses transaksi pembayaran, PPOB, dan transfer saldo; (b) Melakukan verifikasi identitas sesuai peraturan yang berlaku; (c) Menilai kelayakan layanan dan profil risiko; (d) Mendeteksi dan mencegah aktivitas ilegal atau penipuan; serta (e) Memberikan layanan dukungan pelanggan yang dipersonalisasi.',
     },
     {
-      title: '3. Keamanan Data',
-      content: 'Kami mengambil langkah-langkah keamanan teknis dan organisasi yang wajar untuk melindungi informasi pribadi Anda dari akses yang tidak sah, pengungkapan, atau kerusakan.',
+      title: '3. Keamanan dan Perlindungan Data Terenkripsi',
+      content: 'Kami menerapkan standar keamanan internasional termasuk enkripsi AES-256 dan TLS 1.3 untuk melindungi data selama transit dan penyimpanan. PunyaKios menggunakan arsitektur keamanan bertingkat untuk memastikan hanya sistem yang berwenang yang dapat mengakses data secara terbatas untuk keperluan operasional layanan.',
     },
     {
-      title: '4. Berbagi Informasi',
-      content: 'Kami tidak menjual atau menyewakan informasi pribadi Anda kepada pihak ketiga. Kami hanya berbagi informasi dengan mitra layanan yang diperlukan untuk memproses transaksi atau menyediakan layanan kepada Anda.',
+      title: '4. Pengungkapan Kepada Pihak Ketiga',
+      content: 'Kami dapat mengungkapkan Data Pribadi kepada mitra strategis kami (seperti penyedia infrastruktur pembayaran, penyelenggara sistem elektronik, dan otoritas pemerintah) hanya sejauh yang diperlukan untuk menyediakan Layanan kepada Anda atau untuk mematuhi kewajiban hukum yang berlaku di negara Republik Indonesia.',
     },
     {
-      title: '5. Perubahan Kebijakan',
-      content: 'Kami dapat memperbarui kebijakan privasi ini dari waktu ke waktu. Perubahan akan diberitahukan melalui aplikasi atau email yang terdaftar.',
+      title: '5. Hak-Hak Subjek Data',
+      content: 'Sesuai dengan peraturan pelindungan data pribadi yang berlaku, Anda memiliki hak untuk mengakses, memperbaiki, memperbarui, atau meminta penghapusan Data Pribadi Anda. Anda juga berhak untuk menarik persetujuan pemrosesan data, dengan pemahaman bahwa hal ini dapat berdampak pada ketersediaan atau akses terhadap Layanan PunyaKios tertentu.',
+    },
+    {
+      title: '6. Cookies dan Teknologi Pelacakan',
+      content: 'Aplikasi dan situs web kami menggunakan cookies dan teknologi serupa untuk memahami perilaku pengguna, meningkatkan keamanan, mengelola preferensi autentikasi, dan mempersonalisasi materi pemasaran kami. Anda dapat mengatur preferensi pelacakan melalui pengaturan perangkat Anda.',
+    },
+    {
+      title: '7. Penyimpanan dan Retensi Data',
+      content: 'Kami menyimpan Data Pribadi Anda selama Anda memiliki akun PunyaKios yang aktif dan setelahnya untuk periode sesuai dengan ketentuan peraturan perundang-undangan (minimal 5-10 tahun untuk data transaksi keuangan) atau selama diperlukan untuk melindungi kepentingan hukum kami.',
+    },
+    {
+      title: '8. Hubungi Kami',
+      content: 'Jika Anda memiliki pertanyaan, kekhawatiran, atau permintaan terkait Kebijakan Privasi ini, Anda dapat menghubungi tim Pelindungan Data kami melalui Help Center di aplikasi atau melalui saluran komunikasi resmi PT Visionary Digital Indonesia lainnya.',
     },
   ];
 
   return (
     <SafeAreaView style={[styles.container, {backgroundColor: isDarkMode ? '#0f172a' : '#f8fafc'}]}>
-      <CustomHeader title="Privacy Policy" />
+      <CustomHeader title="Kebijakan Privasi" />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerSection}>
-          <Text style={[styles.lastUpdated, {color: secondaryTextColor}]}>Terakhir diperbarui: 8 Februari 2026</Text>
+          <Text style={[styles.lastUpdated, {color: secondaryTextColor}]}>
+            Terakhir diperbarui: {new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'})}
+          </Text>
         </View>
 
         {policySections.map((section, index) => (
@@ -61,7 +75,7 @@ export default function PrivacyPolicy({navigation}) {
 
         <View style={styles.footerSection}>
           <Text style={[styles.footerText, {color: secondaryTextColor}]}>
-            Jika Anda memiliki pertanyaan tentang Kebijakan Privasi ini, silakan hubungi kami melalui Help Center.
+            Dengan menggunakan layanan PunyaKios, Anda menyatakan telah membaca, memahami, dan menyetujui seluruh ketentuan dalam Kebijakan Privasi ini. Jika memiliki pertanyaan, Hubungi kami melalui Help Center.
           </Text>
         </View>
       </ScrollView>

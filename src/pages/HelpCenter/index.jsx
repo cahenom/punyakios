@@ -24,10 +24,24 @@ import {
   WHITE_BACKGROUND,
   BLUE_COLOR,
   WHITE_COLOR,
+  GREY_COLOR,
+  BORDER_RADIUS,
+  SPACING,
 } from '../../utils/const';
+import { LayoutAnimation, Platform, UIManager } from 'react-native';
+
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 export default function HelpCenter({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
+  const [expandedIndex, setExpandedIndex] = React.useState(null);
+
+  const toggleExpand = (index) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedIndex(expandedIndex === index ? null : index);
+  };
 
   const faqItems = [
     {
@@ -71,21 +85,46 @@ export default function HelpCenter({navigation}) {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, {color: textColor}]}>FAQ (Pertanyaan Populer)</Text>
           {faqItems.map((item, index) => (
-            <View key={index} style={[styles.faqCard, {backgroundColor: cardBg, borderColor: borderColor}]}>
-              <Text style={[styles.faqQuestion, {color: textColor}]}>{item.question}</Text>
-              <Text style={[styles.faqAnswer, {color: secondaryTextColor}]}>{item.answer}</Text>
-            </View>
+            <TouchableOpacity 
+              key={index} 
+              style={[
+                styles.faqCard, 
+                {
+                  backgroundColor: cardBg, 
+                  borderColor: expandedIndex === index ? BLUE_COLOR : borderColor,
+                  borderWidth: expandedIndex === index ? 1.5 : 1
+                }
+              ]}
+              onPress={() => toggleExpand(index)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.faqHeader}>
+                <Text style={[styles.faqQuestion, {color: textColor, flex: 1}]}>{item.question}</Text>
+                <Text style={{color: expandedIndex === index ? BLUE_COLOR : secondaryTextColor, fontSize: 18, fontWeight: 'bold'}}>
+                  {expandedIndex === index ? '−' : '+'}
+                </Text>
+              </View>
+              {expandedIndex === index && (
+                <View style={styles.answerContainer}>
+                  <View style={styles.divider} />
+                  <Text style={[styles.faqAnswer, {color: secondaryTextColor}]}>{item.answer}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
           ))}
         </View>
 
         <View style={styles.contactSection}>
-          <Text style={[styles.sectionTitle, {color: textColor}]}>Butuh bantuan lebih lanjut?</Text>
+          <Text style={[styles.contactTitle, {color: textColor}]}>Butuh bantuan lebih lanjut?</Text>
+          <Text style={styles.contactSubtitle}>
+            Tim kami siap membantu Anda 24/7 untuk segala kendala transaksi.
+          </Text>
           <TouchableOpacity 
             style={styles.contactButton}
             onPress={handleContactSupport}
             activeOpacity={0.8}
           >
-            <Text style={styles.contactButtonText}>Hubungi Customer Service (WhatsApp)</Text>
+            <Text style={styles.contactButtonText}>Chat via WhatsApp</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -102,66 +141,104 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   heroSection: {
-    paddingVertical: 30,
+    paddingVertical: 35,
     alignItems: 'center',
   },
   heroTitle: {
-    fontSize: 24,
+    fontSize: 26,
     fontFamily: BOLD_FONT,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   heroSubtitle: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: REGULAR_FONT,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 22,
+    paddingHorizontal: 10,
   },
   section: {
     marginTop: 10,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 17,
     fontFamily: BOLD_FONT,
-    marginBottom: 15,
+    marginBottom: 16,
   },
   faqCard: {
-    borderRadius: 12,
+    borderRadius: BORDER_RADIUS.medium,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 2,
+      }
+    })
+  },
+  faqHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   faqQuestion: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: MEDIUM_FONT,
-    marginBottom: 8,
+  },
+  answerContainer: {
+    marginTop: 12,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#f1f5f9',
+    marginBottom: 12,
+    opacity: 0.5,
   },
   faqAnswer: {
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: REGULAR_FONT,
-    lineHeight: 18,
+    lineHeight: 22,
   },
   contactSection: {
-    marginTop: 30,
+    marginTop: 40,
     alignItems: 'center',
+    padding: 20,
+    borderRadius: BORDER_RADIUS.large,
+    backgroundColor: '#eff6ff', // Light blue background for emphasis
+  },
+  contactTitle: {
+    fontSize: 16,
+    fontFamily: BOLD_FONT,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  contactSubtitle: {
+    fontSize: 13,
+    fontFamily: REGULAR_FONT,
+    color: '#64748b',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   contactButton: {
     backgroundColor: BLUE_COLOR,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: BORDER_RADIUS.medium,
     width: '100%',
     alignItems: 'center',
-    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
   },
   contactButtonText: {
     color: WHITE_COLOR,
     fontFamily: BOLD_FONT,
-    fontSize: 14,
+    fontSize: 15,
   },
 });

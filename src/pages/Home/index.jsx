@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
-import {BellIkon, Eye, EyeCros, SendIkon} from '../../assets';
+import {BellIkon, Eye, EyeCros, SendIkon, MoreIkon, TransferIkon, QrisPayIkon} from '../../assets';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   BOLD_FONT,
@@ -142,8 +142,8 @@ export default function HomeScreen({navigation}) {
     }));
   };
 
-  const onRefresh = async () => {
-    setRefreshing(true);
+  const onRefresh = async (silent = false) => {
+    if (!silent) setRefreshing(true);
     try {
       await refreshUserProfile();
       const response = await api.post('/api/user/transaksi');
@@ -157,11 +157,11 @@ export default function HomeScreen({navigation}) {
     } catch (error) {
       console.error('Error refreshing:', error);
     } finally {
-      setRefreshing(false);
+      if (!silent) setRefreshing(false);
     }
   };
 
-  useFocusEffect(useCallback(() => { onRefresh(); }, []));
+  useFocusEffect(useCallback(() => { onRefresh(true); }, []));
 
   useEffect(() => {
     const loadRecentActivities = async () => {
@@ -265,57 +265,62 @@ export default function HomeScreen({navigation}) {
           />
         }>
 
-        {/* ===== BALANCE ROW ===== */}
-        <View style={styles.balanceRow(isDarkMode)}>
-          <View>
-            <Text style={styles.balanceLabel(isDarkMode)}>Saldo Dimiliki,</Text>
-            <View style={styles.balanceAmountRow}>
-              <Text style={styles.balanceAmount(isDarkMode)}>
-                {isBalanceVisible
-                  ? `Rp${user?.saldo ? parseFloat(user.saldo).toLocaleString('id-ID') : '0'}`
-                  : 'Rp ••••••'}
-              </Text>
-              <TouchableOpacity onPress={toggleBalanceVisibility} style={{marginLeft: 8}}>
-                {isBalanceVisible ? (
-                  <Eye width={18} height={18} fill={isDarkMode ? '#94a3b8' : '#374957'} />
-                ) : (
-                  <EyeCros width={18} height={18} fill={isDarkMode ? '#94a3b8' : '#374957'} />
-                )}
-              </TouchableOpacity>
-            </View>
-            <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 4}}>
-              <View style={[
-                styles.pointsBalanceContainer, 
-                !isBalanceVisible && {backgroundColor: 'rgba(249, 115, 22, 0.2)', borderColor: '#f97316'}
-              ]}>
-                <Text style={[
-                  styles.pointsBalanceText(isDarkMode),
-                  !isBalanceVisible && {fontWeight: 'bold'}
-                ]}>
-                  🪙 {user?.points || 0} Poin
-                </Text>
+        {/* ===== BALANCE CARD ===== */}
+        <View style={styles.balanceCardContainer}>
+          <View style={styles.balanceCard(isDarkMode)}>
+            <LinearGradient
+              colors={isDarkMode ? ['#1e293b', '#0f172a'] : ['#ffffff', '#f8fafc']}
+              style={styles.balanceCardInner}>
+              
+              <View style={styles.cardHeaderRow}>
+                <View>
+                  <Text style={styles.balanceLabel(isDarkMode)}>Saldo Dimiliki</Text>
+                  <View style={styles.balanceAmountRow}>
+                    <Text style={styles.balanceAmount(isDarkMode)}>
+                      {isBalanceVisible
+                        ? `Rp${user?.saldo ? parseFloat(user.saldo).toLocaleString('id-ID') : '0'}`
+                        : 'Rp ••••••'}
+                    </Text>
+                    <TouchableOpacity onPress={toggleBalanceVisibility} style={styles.eyeButton}>
+                      {isBalanceVisible ? (
+                        <Eye width={16} height={16} fill={isDarkMode ? '#94a3b8' : '#64748b'} />
+                      ) : (
+                        <EyeCros width={16} height={16} fill={isDarkMode ? '#94a3b8' : '#64748b'} />
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                
+                <View style={styles.pointSection}>
+                  <Text style={styles.pointLabel(isDarkMode)}>Poin PunyaKios</Text>
+                  <TouchableOpacity 
+                    style={styles.pointRow}
+                    onPress={() => navigation.navigate('PointsRedeem')}>
+                    <Text style={styles.pointValue}>🪙 {user?.points || 0}</Text>
+                    <Text style={styles.pointTukarText}>Tukar</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <TouchableOpacity 
-                style={styles.exchangeButton}
-                onPress={() => navigation.navigate('PointsRedeem')}>
-                <Text style={styles.exchangeButtonText}>Tukar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={{flexDirection: 'row', gap: 8}}>
-            <TouchableOpacity
-              style={[styles.depositButton, {backgroundColor: isDarkMode ? '#1e293b' : '#f1f5f9', borderWidth: 1, borderColor: isDarkMode ? '#334155' : '#e2e8f0'}]}
-              onPress={() => navigation.navigate('Transfer')}
-              activeOpacity={0.8}>
-              <SendIkon width={16} height={16} fill={isDarkMode ? '#93c5fd' : BLUE_COLOR} />
-              <Text style={[styles.depositText, {color: isDarkMode ? '#93c5fd' : BLUE_COLOR, marginLeft: 4}]}>Kirim</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.depositButton}
-              onPress={() => navigation.navigate('DepositPage')}
-              activeOpacity={0.8}>
-              <Text style={styles.depositText}>+ Deposit</Text>
-            </TouchableOpacity>
+
+              <View style={styles.cardDivider(isDarkMode)} />
+
+              <View style={styles.cardActionRow}>
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.transferButton(isDarkMode)]}
+                  onPress={() => navigation.navigate('Transfer')}
+                  activeOpacity={0.8}>
+                  <TransferIkon width={14} height={14} />
+                  <Text style={styles.transferButtonText(isDarkMode)}>Kirim Saldo</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.topupButton]}
+                  onPress={() => navigation.navigate('DepositPage')}
+                  activeOpacity={0.8}>
+                  <Text style={styles.topupButtonText}>+ Deposit Saldo</Text>
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
           </View>
         </View>
 
@@ -343,7 +348,7 @@ export default function HomeScreen({navigation}) {
               onPress={() => navigation.navigate('LihatSemua')}
               activeOpacity={0.7}>
               <View style={[styles.serviceIconBox, {backgroundColor: isDarkMode ? '#1e293b' : '#f0f3f7'}]}>
-                <Text style={{fontSize: 22}}>⊞</Text>
+                <MoreIkon width={24} height={24} />
               </View>
               <Text style={styles.serviceLabel(isDarkMode)} numberOfLines={2}>
                 Lihat{'\n'}Semua
@@ -531,21 +536,33 @@ const styles = StyleSheet.create({
     color: WHITE_COLOR,
   },
 
-  // ===== BALANCE ROW =====
-  balanceRow: isDarkMode => ({
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  // ===== BALANCE CARD =====
+  balanceCardContainer: {
     paddingHorizontal: HORIZONTAL_MARGIN,
-    paddingVertical: SPACING.lg,
+    marginTop: 10,
+    zIndex: 10,
+  },
+  balanceCard: isDarkMode => ({
+    borderRadius: 20,
     backgroundColor: isDarkMode ? '#1a2332' : WHITE_BACKGROUND,
-    borderBottomWidth: 1,
-    borderBottomColor: isDarkMode ? '#2d3748' : '#f1f5f9',
+    ...SHADOWS.large,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: isDarkMode ? '#2d3748' : '#f1f5f9',
   }),
+  balanceCardInner: {
+    padding: 16,
+  },
+  cardHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
   balanceLabel: isDarkMode => ({
     fontFamily: REGULAR_FONT,
-    fontSize: 13,
-    color: isDarkMode ? SLATE_COLOR : '#64748b',
+    fontSize: 12,
+    color: isDarkMode ? '#94a3b8' : '#64748b',
     marginBottom: 2,
   }),
   balanceAmountRow: {
@@ -554,48 +571,75 @@ const styles = StyleSheet.create({
   },
   balanceAmount: isDarkMode => ({
     fontFamily: BOLD_FONT,
-    fontSize: 22,
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    fontSize: 20,
+    color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
   }),
-  pointsBalanceContainer: {
-    marginTop: 4,
-    backgroundColor: 'rgba(249, 115, 22, 0.1)',
-    alignSelf: 'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(249, 115, 22, 0.2)',
+  eyeButton: {
+    padding: 4,
+    marginLeft: 4,
   },
-  pointsBalanceText: isDarkMode => ({
-    fontFamily: MEDIUM_FONT,
-    fontSize: 12,
+  pointSection: {
+    alignItems: 'flex-end',
+  },
+  pointLabel: isDarkMode => ({
+    fontFamily: REGULAR_FONT,
+    fontSize: 11,
+    color: isDarkMode ? '#94a3b8' : '#64748b',
+    marginBottom: 2,
+  }),
+  pointRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  pointValue: {
+    fontFamily: BOLD_FONT,
+    fontSize: 14,
     color: '#f97316',
-  }),
-  exchangeButton: {
-    marginLeft: 8,
-    backgroundColor: '#f97316',
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 6,
   },
-  exchangeButtonText: {
+  pointTukarText: {
     fontFamily: BOLD_FONT,
     fontSize: 10,
-    color: WHITE_COLOR,
+    color: '#f97316',
+    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
   },
-  depositButton: {
-    backgroundColor: BLUE_COLOR,
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: 12,
-    borderRadius: BORDER_RADIUS.medium,
+  cardDivider: isDarkMode => ({
+    height: 1,
+    backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#f1f5f9',
+    marginVertical: 12,
+  }),
+  cardActionRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  actionButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 12,
   },
-  depositText: {
+  transferButton: isDarkMode => ({
+    backgroundColor: isDarkMode ? 'rgba(14, 165, 233, 0.1)' : '#f0f9ff',
+    borderWidth: 1,
+    borderColor: isDarkMode ? 'rgba(14, 165, 233, 0.2)' : '#e0f2fe',
+  }),
+  transferButtonText: isDarkMode => ({
     fontFamily: BOLD_FONT,
-    fontSize: 13,
+    fontSize: 12,
+    color: isDarkMode ? '#38bdf8' : BLUE_COLOR,
+    marginLeft: 6,
+  }),
+  topupButton: {
+    backgroundColor: BLUE_COLOR,
+  },
+  topupButtonText: {
+    fontFamily: BOLD_FONT,
+    fontSize: 12,
     color: WHITE_COLOR,
   },
 

@@ -1,6 +1,7 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M22 10V6C22 4.89543 21.1046 4 20 4H4C2.89543 4 2 4.89543 2 6V10C3.10457 10 4 10.8954 4 12C4 13.1046 3.10457 14 2 14V18C2 19.1046 2.89543 20 4 20H20C21.1046 20 22 19.1046 22 18V14C20.8954 14 20 13.1046 20 12C20 10.8954 20.8954 10 22 10Z" fill="#1e0bff"/>
-<path d="M10 4V20" stroke="white" stroke-width="1.5" stroke-dasharray="3 2"/>
-<rect x="13" y="9" width="5" height="2" rx="1" fill="white"/>
-<rect x="13" y="13" width="5" height="2" rx="1" fill="white"/>
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="800px" height="800px" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 512m-480 0a480 480 0 1 0 960 0 480 480 0 1 0-960 0Z" fill="#FFE5CF" />
+  <path d="M832 320c-51.2 0-96 44.8-102.4 102.4-6.4 51.2 32 96 83.2 102.4v256c0 44.8-44.8 89.6-102.4 89.6H313.6c-51.2 0-102.4-44.8-102.4-102.4v-256c51.2-6.4 89.6-51.2 83.2-102.4-6.4-51.2-44.8-102.4-102.4-102.4V217.6c0-44.8 44.8-89.6 102.4-89.6h416c51.2 0 102.4 44.8 102.4 102.4V320z" fill="#FF8746" />
+  <path d="M416 384h192v256H416z" fill="#FFE5CF" opacity="0.4" />
+  <circle cx="512" cy="512" r="64" fill="#FFFFFF" />
 </svg>
