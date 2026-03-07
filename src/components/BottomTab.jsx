@@ -74,22 +74,32 @@ function TabItem({route, index, isFocused, options, onPress, onLongPress, isDark
           style={{
             marginTop: -34,
           }}>
-          <LinearGradient
-            colors={GRADIENTS.primary}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={{
-              width: 78,
-              height: 78,
-              borderRadius: 39,
-              alignItems: 'center',
-              justifyContent: 'center',
-              ...SHADOWS.colored('#1e0bff'),
-              borderWidth: 4,
-              borderColor: isDarkMode ? '#1a2332' : '#ffffff',
-            }}>
-            <ScanIcon width={30} height={30} />
-          </LinearGradient>
+          <View style={{
+            width: 78,
+            height: 78,
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+          }}>
+            {/* Camera Corners */}
+            <View style={{ position: 'absolute', top: 0, left: 0, width: 15, height: 15, borderTopWidth: 3, borderLeftWidth: 3, borderColor: BLUE_COLOR, borderTopLeftRadius: 4}} />
+            <View style={{ position: 'absolute', top: 0, right: 0, width: 15, height: 15, borderTopWidth: 3, borderRightWidth: 3, borderColor: BLUE_COLOR, borderTopRightRadius: 4}} />
+            <View style={{ position: 'absolute', bottom: 0, left: 0, width: 15, height: 15, borderBottomWidth: 3, borderLeftWidth: 3, borderColor: BLUE_COLOR, borderBottomLeftRadius: 4}} />
+            <View style={{ position: 'absolute', bottom: 0, right: 0, width: 15, height: 15, borderBottomWidth: 3, borderRightWidth: 3, borderColor: BLUE_COLOR, borderBottomRightRadius: 4}} />
+
+            <View
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 18,
+                backgroundColor: '#ffffff',
+                alignItems: 'center',
+                justifyContent: 'center',
+                ...SHADOWS.large,
+              }}>
+              <ScanIcon width={32} height={32} fill="#000000" />
+            </View>
+          </View>
         </TouchableOpacity>
         <Text
           style={{

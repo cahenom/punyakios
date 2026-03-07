@@ -39,6 +39,7 @@ const Transaksi = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [payingRef, setPayingRef] = useState(null);
   const navigation = useNavigation();
 
   const loadCachedTransactions = async () => {
@@ -103,6 +104,7 @@ const Transaksi = () => {
               : 0,
           sn: transaction.sn || '-',
           type: transaction.type || '-',
+          status_inquiry: transaction.status_inquiry || null,
           created_at: transaction.created_at || '-',
         }));
 
@@ -200,6 +202,52 @@ const Transaksi = () => {
       bg: isDarkMode ? '#1e293b' : '#f1f5f9',
       text: isDarkMode ? '#94a3b8' : '#64748b',
     };
+  };
+
+  const isPayablePasca = (item) => {
+    return (
+      item.type === 'pasca' &&
+      item.status_inquiry === 'success' &&
+      item.status === 'Pending' &&
+      item.price > 0
+    );
+  };
+
+  const handlePayBill = async (item) => {
+    setPayingRef(item.ref);
+    try {
+      const response = await api.post('/api/order/bayar-tagihan', {
+        sku: item.sku,
+        customer_no: item.tujuan,
+      });
+
+      const result = response.data;
+
+      if (result.data && ['Sukses', 'Pending'].includes(result.data.status)) {
+        navigation.navigate('SuccessNotif', {
+          item: {
+            ...result.data,
+            tujuan: item.tujuan,
+            customer_no: item.tujuan,
+            ref_id: result.data.ref_id || item.ref,
+            type: 'pasca',
+          },
+          product: {
+            produk: item.produk || 'Tagihan',
+            name: item.sku,
+            label: item.sku,
+            price: `Rp ${(result.data.selling_price || item.price).toLocaleString('id-ID')}`,
+          },
+        });
+        fetchTransactions();
+      } else {
+        Alert.alert('Gagal', result.message || 'Pembayaran gagal');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.response?.data?.message || 'Terjadi kesalahan saat membayar tagihan');
+    } finally {
+      setPayingRef(null);
+    }
   };
 
   const renderTransactionItem = ({item}) => {
@@ -322,6 +370,23 @@ const Transaksi = () => {
               </Text>
             </View>
           </View>
+
+          {isPayablePasca(item) && (
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => handlePayBill(item)}
+              disabled={payingRef === item.ref}
+              style={[
+                styles.payButton,
+                payingRef === item.ref && {opacity: 0.6},
+              ]}>
+              {payingRef === item.ref ? (
+                <ActivityIndicator size="small" color={WHITE_COLOR} />
+              ) : (
+                <Text style={styles.payButtonText}>Bayar Sekarang</Text>
+              )}
+            </TouchableOpacity>
+          )}
         </View>
       </TouchableOpacity>
     );
@@ -456,6 +521,20 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     fontFamily: MEDIUM_FONT,
+  },
+  payButton: {
+    marginTop: 12,
+    backgroundColor: '#2563EB',
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  payButtonText: {
+    color: WHITE_COLOR,
+    fontSize: 13,
+    fontFamily: BOLD_FONT,
+    letterSpacing: 0.3,
   },
 });
 

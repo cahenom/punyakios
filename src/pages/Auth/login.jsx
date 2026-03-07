@@ -122,6 +122,7 @@ export default function LoginPage({navigation}) {
                 value={email}
                 onChangeText={text => setEmail(text.trim())}
                 autoCapitalize="none"
+                maxLength={50}
               />
             </View>
 
@@ -141,6 +142,7 @@ export default function LoginPage({navigation}) {
                   secureTextEntry={isSecure}
                   value={password}
                   onChangeText={text => setPassword(text)}
+                  maxLength={50}
                 />
                 <TouchableOpacity
                   style={styles.eyeButton}

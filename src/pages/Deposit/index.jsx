@@ -84,6 +84,19 @@ const DepositPage = () => {
       return;
     }
 
+    // Check balance limit (20 million)
+    const currentBalance = parseFloat(user?.saldo || 0);
+    const depositAmount = parseInt(amount);
+    const maxBalance = 20000000;
+
+    if ((currentBalance + depositAmount) > maxBalance) {
+      Alert.alert(
+        'Batas Saldo Terlampaui',
+        `Maaf, total saldo Anda tidak boleh melebihi Rp ${maxBalance.toLocaleString('id-ID')}. Saldo Anda saat ini adalah Rp ${currentBalance.toLocaleString('id-ID')}.`
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await depositService.createDeposit(token, {
@@ -134,7 +147,34 @@ const DepositPage = () => {
   };
 
   const renderTransactionItem = ({item}) => (
-    <View style={styles.transactionItem}>
+    <TouchableOpacity 
+      style={styles.transactionItem}
+      onPress={() => {
+        navigation.navigate('SuccessNotif', {
+          item: {
+            ref: item.ref,
+            tujuan: item.tujuan,
+            sku: item.sku,
+            status: item.status,
+            message: item.message,
+            price: item.price,
+            sn: item.sn,
+            type: item.type,
+            created_at: item.created_at,
+            customer_no: item.tujuan,
+            ref_id: item.ref,
+            data: item,
+          },
+          product: {
+            produk: item.produk || 'Deposit',
+            name: item.sku || 'Deposit Saldo',
+            label: item.sku || 'Deposit Saldo',
+            price: `Rp ${(item.price || 0).toLocaleString('id-ID')}`,
+          },
+        });
+      }}
+      activeOpacity={0.7}
+    >
       <View style={styles.transactionInfo}>
         <Text style={styles.transactionService}>
           {item.sku || item.product_name || 'Deposit'}
@@ -164,7 +204,7 @@ const DepositPage = () => {
           {item.status === 'paid' ? 'BERHASIL' : item.status === 'expired' ? 'KADALUARSA' : item.status || 'Pending'}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

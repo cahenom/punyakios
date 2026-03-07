@@ -194,6 +194,7 @@ export default function RegisterPage({navigation}) {
                 placeholderTextColor={isDarkMode ? SLATE_COLOR : GREY_COLOR}
                 value={name}
                 onChangeText={text => setName(text)}
+                maxLength={50}
               />
             </View>
 
@@ -208,6 +209,7 @@ export default function RegisterPage({navigation}) {
                 onChangeText={text => setEmail(text.trim())}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                maxLength={50}
               />
             </View>
 
@@ -221,6 +223,7 @@ export default function RegisterPage({navigation}) {
                 value={phone}
                 onChangeText={text => setPhone(text)}
                 keyboardType="phone-pad"
+                maxLength={15}
               />
             </View>
 
@@ -235,6 +238,7 @@ export default function RegisterPage({navigation}) {
                   secureTextEntry={isSecure}
                   value={password}
                   onChangeText={text => setPassword(text)}
+                  maxLength={50}
                 />
                 <TouchableOpacity
                   style={styles.eyeButton}
@@ -255,6 +259,7 @@ export default function RegisterPage({navigation}) {
                   secureTextEntry={isSecure}
                   value={passwordConfirmation}
                   onChangeText={text => setPasswordConfirmation(text)}
+                  maxLength={50}
                 />
               </View>
             </View>
@@ -269,6 +274,7 @@ export default function RegisterPage({navigation}) {
                 value={referralCode}
                 onChangeText={text => setReferralCode(text.toUpperCase())}
                 autoCapitalize="characters"
+                maxLength={50}
               />
             </View>
 

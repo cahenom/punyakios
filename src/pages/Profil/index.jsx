@@ -30,6 +30,7 @@ import {
   WHITE_COLOR,
   GREY_COLOR,
   SLATE_COLOR,
+  SHADOWS,
 } from '../../utils/const';
 import {useAuth} from '../../context/AuthContext';
 import {useAlert} from '../../context/AlertContext';
@@ -464,8 +465,12 @@ export default function ProfilScreen({navigation}) {
       height: 96,
       borderRadius: 48,
       borderWidth: 4,
-      borderColor: isDarkMode ? '#1e293b' : '#ffffff',
+      borderColor: isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.6)',
+      backgroundColor: WHITE_COLOR,
+      justifyContent: 'center',
+      alignItems: 'center',
       position: 'relative',
+      ...SHADOWS.medium,
     },
     profileAvatarText: {
       fontSize: 40,
@@ -644,16 +649,11 @@ export default function ProfilScreen({navigation}) {
       <View style={styles.profileCard}>
         <View style={styles.profileCardDecor} />
         <View style={styles.profileCardContent}>
-          <View
-            style={[
-              styles.profileImageContainer,
-              {
-                backgroundColor: isDarkMode ? '#1e293b' : '#3b82f6',
-                justifyContent: 'center',
-                alignItems: 'center',
-              },
-            ]}>
-            <UserPerson width={90} height={90} />
+          <View style={styles.profileImageContainer}>
+            <Image 
+              source={{uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}} 
+              style={{width: '100%', height: '100%', borderRadius: 48}} 
+            />
           </View>
           <View style={styles.profileTextContainer}>
             <View style={styles.profileNameWrapper}>
@@ -671,13 +671,20 @@ export default function ProfilScreen({navigation}) {
               {user?.phone || '08xxxxxxx'}
             </Text>
             <View style={[styles.badgeContainer, {flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 8, paddingHorizontal: 16, backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.8)' : '#f8fafc', borderColor: dividerColor, borderWidth: 1}]}>
-              <View style={{flex: 1}}>
-                <Text style={{fontSize: 10, color: secondaryTextColor, marginBottom: 2}}>Main Balance</Text>
-                <Text style={[styles.badgeText, {fontSize: 18, color: textColor, letterSpacing: 0.5}]}>
-                  {isBalanceVisible
-                    ? `Rp ${user?.saldo ? parseFloat(user.saldo).toLocaleString() : '0'}`
-                    : 'Rp ••••••'}
-                </Text>
+              <View style={{flex: 1, height: 32, justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={[styles.badgeText, {fontSize: 12, color: textColor, marginRight: 4, marginTop: 2}]}>Rp</Text>
+                <View style={{flex: 1}}>
+                  <Text 
+                    style={[styles.badgeText, {fontSize: 18, color: textColor, letterSpacing: 0.5}]}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit={true}
+                    minimumFontScale={0.4}
+                  >
+                    {isBalanceVisible
+                      ? (user?.saldo ? parseFloat(user.saldo).toLocaleString('id-ID') : '0')
+                      : '••••••'}
+                  </Text>
+                </View>
               </View>
               <TouchableOpacity onPress={toggleBalanceVisibility} activeOpacity={0.7} style={{padding: 8, backgroundColor: isDarkMode ? '#334155' : '#eff6ff', borderRadius: 8}}>
                 {isBalanceVisible ? (

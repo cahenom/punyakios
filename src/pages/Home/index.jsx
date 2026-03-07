@@ -10,10 +10,11 @@ import {
   RefreshControl,
   SafeAreaView,
   StatusBar,
+  Platform,
 } from 'react-native';
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
-import {BellIkon, Eye, EyeCros, SendIkon, MoreIkon, TransferIkon, QrisPayIkon} from '../../assets';
+import {BellIkon, Eye, EyeCros, SendIkon, MoreIkon, TransferIkon, QrisPayIkon, ArrowRight, AddIkon, ScanIcon} from '../../assets';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   BOLD_FONT,
@@ -238,24 +239,41 @@ export default function HomeScreen({navigation}) {
         translucent={false}
       />
 
-      {/* ===== TOP BAR ===== */}
-      <View style={[styles.topBar, {backgroundColor: isDarkMode ? '#101622' : BLUE_COLOR}]}>
-        <Text style={styles.appName}>PUNYA KIOS</Text>
-        <TouchableOpacity style={styles.bellButton}>
-          <BellIkon width={24} height={24} fill={WHITE_COLOR} />
-          <View style={styles.bellBadge}>
-            <Text style={styles.bellBadgeText}>2</Text>
+      {/* ===== FIXED HEADER WITH CURVE ===== */}
+      <View style={[styles.headerContainer, {backgroundColor: isDarkMode ? '#101622' : BLUE_COLOR}]}>
+        <View style={styles.topBar}>
+          <View>
+            <Text style={styles.greetingText}>Halo, 👋</Text>
+            <Text style={styles.userNameText} numberOfLines={1}>
+              {user?.name || 'User PunyaKios'}
+            </Text>
           </View>
-        </TouchableOpacity>
+          <View style={styles.headerActions}>
+            <TouchableOpacity 
+              style={styles.bellButton}
+              onPress={() => navigation.navigate('Notifikasi')}>
+              <BellIkon width={24} height={24} fill={WHITE_COLOR} />
+              <View style={styles.bellBadge}>
+                <Text style={styles.bellBadgeText}>2</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.profileButton}
+              onPress={() => navigation.navigate('Profil')}>
+              <View style={styles.profileCircle}>
+                <Image 
+                  source={{uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'}} 
+                  style={styles.profileImage} 
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-
-      <TutorialModal 
-        visible={showTutorial} 
-        onComplete={handleTutorialComplete} 
-      />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{flexGrow: 1}}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -266,89 +284,139 @@ export default function HomeScreen({navigation}) {
         }>
 
         {/* ===== BALANCE CARD ===== */}
-        <View style={styles.balanceCardContainer}>
-          <View style={styles.balanceCard(isDarkMode)}>
-            <LinearGradient
-              colors={isDarkMode ? ['#1e293b', '#0f172a'] : ['#ffffff', '#f8fafc']}
-              style={styles.balanceCardInner}>
-              
-              <View style={styles.cardHeaderRow}>
-                <View>
-                  <Text style={styles.balanceLabel(isDarkMode)}>Saldo Dimiliki</Text>
-                  <View style={styles.balanceAmountRow}>
-                    <Text style={styles.balanceAmount(isDarkMode)}>
-                      {isBalanceVisible
-                        ? `Rp${user?.saldo ? parseFloat(user.saldo).toLocaleString('id-ID') : '0'}`
-                        : 'Rp ••••••'}
-                    </Text>
-                    <TouchableOpacity onPress={toggleBalanceVisibility} style={styles.eyeButton}>
-                      {isBalanceVisible ? (
-                        <Eye width={16} height={16} fill={isDarkMode ? '#94a3b8' : '#64748b'} />
-                      ) : (
-                        <EyeCros width={16} height={16} fill={isDarkMode ? '#94a3b8' : '#64748b'} />
-                      )}
-                    </TouchableOpacity>
+        <View style={styles.balanceCardWrapper}>
+          <LinearGradient
+            colors={isDarkMode ? ['#1e293b', '#0f172a'] : GRADIENTS.primary}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 1}}
+            style={styles.mainBalanceCard}>
+            
+            <View style={styles.cardInfoRow}>
+              <View style={styles.balanceMain}>
+                <Text style={styles.cardLabel}>Saldo Saya</Text>
+                <View style={styles.amountRow}>
+                  <View style={{flex: 1, height: 40, justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={[styles.mainAmountText, {fontSize: 20, marginRight: 2, marginTop: 4}]}>Rp</Text>
+                    <View style={{flex: 1}}>
+                      <Text 
+                        style={styles.mainAmountText}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit={true}
+                        minimumFontScale={0.4}
+                      >
+                        {isBalanceVisible
+                          ? (user?.saldo ? parseFloat(user.saldo).toLocaleString('id-ID') : '0')
+                          : '••••••'}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-                
-                <View style={styles.pointSection}>
-                  <Text style={styles.pointLabel(isDarkMode)}>Poin PunyaKios</Text>
+                  <TouchableOpacity onPress={toggleBalanceVisibility} style={styles.visibilityToggle}>
+                    {isBalanceVisible ? (
+                      <Eye width={20} height={20} fill={WHITE_COLOR} />
+                    ) : (
+                      <EyeCros width={20} height={20} fill={WHITE_COLOR} />
+                    )}
+                  </TouchableOpacity>
+                  
+                  {/* Points badge now level with amount */}
                   <TouchableOpacity 
-                    style={styles.pointRow}
+                    style={styles.pointsFloatingBadge}
                     onPress={() => navigation.navigate('PointsRedeem')}>
-                    <Text style={styles.pointValue}>🪙 {user?.points || 0}</Text>
-                    <Text style={styles.pointTukarText}>Tukar</Text>
+                    <Text style={styles.pointsCount}>🪙 {user?.points || 0}</Text>
+                    <View style={styles.pointsArrow}>
+                      <ArrowRight width={10} height={10} fill="#f97316" />
+                    </View>
                   </TouchableOpacity>
                 </View>
               </View>
+            </View>
 
-              <View style={styles.cardDivider(isDarkMode)} />
-
-              <View style={styles.cardActionRow}>
+            <View style={styles.actionGridContainer}>
+              <View style={styles.actionGridInner}>
                 <TouchableOpacity
-                  style={[styles.actionButton, styles.transferButton(isDarkMode)]}
-                  onPress={() => navigation.navigate('Transfer')}
-                  activeOpacity={0.8}>
-                  <TransferIkon width={14} height={14} />
-                  <Text style={styles.transferButtonText(isDarkMode)}>Kirim Saldo</Text>
+                  style={styles.gridBtn}
+                  onPress={() => navigation.navigate('DepositPage')}
+                  activeOpacity={0.7}>
+                  <View style={styles.gridBtnIcon}>
+                    <AddIkon width={22} height={22} fill={BLUE_COLOR} />
+                  </View>
+                  <Text style={styles.gridBtnLabel}>Deposit</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.actionButton, styles.topupButton]}
-                  onPress={() => navigation.navigate('DepositPage')}
-                  activeOpacity={0.8}>
-                  <Text style={styles.topupButtonText}>+ Deposit Saldo</Text>
+                  style={styles.gridBtn}
+                  onPress={() => navigation.navigate('Transfer')}
+                  activeOpacity={0.7}>
+                  <View style={styles.gridBtnIcon}>
+                    <SendIkon width={20} height={20} fill={BLUE_COLOR} />
+                  </View>
+                  <Text style={styles.gridBtnLabel}>Kirim</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.gridBtn}
+                  onPress={() => navigation.navigate('Scan')}
+                  activeOpacity={0.7}>
+                  <View style={styles.gridBtnIcon}>
+                    <ScanIcon width={32} height={32} fill={BLUE_COLOR} />
+                  </View>
+                  <Text style={styles.gridBtnLabel}>Bayar</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.gridBtn}
+                  onPress={() => navigation.navigate('Transaksi')}
+                  activeOpacity={0.7}>
+                  <View style={styles.gridBtnIcon}>
+                    <MoreIkon width={20} height={20} fill={BLUE_COLOR} />
+                  </View>
+                  <Text style={styles.gridBtnLabel}>Riwayat</Text>
                 </TouchableOpacity>
               </View>
-            </LinearGradient>
-          </View>
+            </View>
+          </LinearGradient>
         </View>
 
         {/* ===== SERVICES GRID ===== */}
         <View style={styles.servicesCard(isDarkMode)}>
           <View style={styles.servicesCardInner}>
             <View style={styles.servicesGrid}>
-            {visibleServices.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.serviceItem}
-                onPress={() => navigation.navigate(item.path)}
-                activeOpacity={0.7}>
-                <View style={[styles.serviceIconBox, {backgroundColor: isDarkMode ? '#1e293b' : '#f0f3f7'}]}>
-                  {React.createElement(item.ikon, {width: 24, height: 24})}
-                </View>
-                <Text style={styles.serviceLabel(isDarkMode)} numberOfLines={2}>
-                  {item.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {visibleServices.map((item, index) => {
+              const getIconBg = (label) => {
+                if (isDarkMode) return 'rgba(255,255,255,0.05)';
+                const colors = {
+                  'Pulsa': '#f0f9ff',
+                  'Paket Data': '#f5f3ff',
+                  'PLN': '#fffbeb',
+                  'Dompet Elektronik': '#f0fdf4',
+                  'Games': '#fdf2f8',
+                };
+                return colors[label] || '#f8fafc';
+              };
+
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.serviceItem}
+                  onPress={() => navigation.navigate(item.path)}
+                  activeOpacity={0.7}>
+                  <View style={[styles.serviceIconBox, {backgroundColor: getIconBg(item.label)}]}>
+                    {React.createElement(item.ikon, {width: 26, height: 26})}
+                  </View>
+                  <Text style={styles.serviceLabel(isDarkMode)} numberOfLines={2}>
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+            
             {/* Lihat Semua */}
             <TouchableOpacity
               style={styles.serviceItem}
               onPress={() => navigation.navigate('LihatSemua')}
               activeOpacity={0.7}>
-              <View style={[styles.serviceIconBox, {backgroundColor: isDarkMode ? '#1e293b' : '#f0f3f7'}]}>
-                <MoreIkon width={24} height={24} />
+              <View style={[styles.serviceIconBox, {backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#f8fafc'}]}>
+                <MoreIkon width={24} height={24} fill={isDarkMode ? WHITE_COLOR : BLUE_COLOR} />
               </View>
               <Text style={styles.serviceLabel(isDarkMode)} numberOfLines={2}>
                 Lihat{'\n'}Semua
@@ -412,7 +480,7 @@ export default function HomeScreen({navigation}) {
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle(isDarkMode)}>Aktivitas Terkini</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Transaksi')}>
-            <Text style={styles.seeAll}>See All</Text>
+            <Text style={styles.seeAll}>Lihat Semua</Text>
           </TouchableOpacity>
         </View>
 
@@ -471,7 +539,7 @@ export default function HomeScreen({navigation}) {
                         </Text>
                       </View>
                       <Text style={styles.cardPrice(isDarkMode)}>
-                        Rp {(activity.price || 0).toLocaleString('id-ID')}
+                        Rp{(activity.price || 0).toLocaleString('id-ID')}
                       </Text>
                     </View>
                   </View>
@@ -480,8 +548,8 @@ export default function HomeScreen({navigation}) {
             })
           ) : (
             <View style={styles.emptyActivity(isDarkMode)}>
-              <Text style={{fontSize: 32, marginBottom: 8}}>📭</Text>
-              <Text style={styles.emptyText(isDarkMode)}>Belum ada transaksi</Text>
+              <Text style={{fontSize: 40, marginBottom: 16}}>empty</Text>
+              <Text style={styles.emptyText(isDarkMode)}>Belum ada transaksi hari ini</Text>
             </View>
           )}
         </View>
@@ -489,6 +557,11 @@ export default function HomeScreen({navigation}) {
         {/* Bottom spacer for tab bar */}
         <View style={{height: 100}} />
       </ScrollView>
+
+      <TutorialModal 
+        visible={showTutorial} 
+        onComplete={handleTutorialComplete} 
+      />
     </SafeAreaView>
   );
 }
@@ -499,160 +572,177 @@ const styles = StyleSheet.create({
     backgroundColor: isDarkMode ? '#101622' : '#f6f6f8',
   }),
 
-  // ===== TOP BAR =====
+  // ===== HEADER & GREETING =====
+  headerContainer: {
+    paddingTop: 15,
+    paddingBottom: 10,
+    paddingHorizontal: HORIZONTAL_MARGIN,
+    borderBottomLeftRadius: 36,
+    borderBottomRightRadius: 36,
+    zIndex: 10,
+  },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: 30,
-    paddingBottom: SPACING.lg,
-    paddingHorizontal: HORIZONTAL_MARGIN,
   },
-  appName: {
+  greetingText: {
+    fontFamily: REGULAR_FONT,
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.7)',
+  },
+  userNameText: {
     fontFamily: BOLD_FONT,
-    fontSize: 26,
+    fontSize: 22,
     color: WHITE_COLOR,
-    letterSpacing: 1.2,
+    marginTop: 2,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
   },
   bellButton: {
     position: 'relative',
-    padding: 6,
+    padding: 8,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 12,
   },
   bellBadge: {
     position: 'absolute',
-    top: 2,
-    right: 0,
+    top: 6,
+    right: 6,
     backgroundColor: '#ef4444',
     borderRadius: 10,
-    minWidth: 18,
-    height: 18,
+    minWidth: 16,
+    height: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 4,
+    borderWidth: 1.5,
+    borderColor: BLUE_COLOR,
   },
   bellBadgeText: {
     fontFamily: BOLD_FONT,
-    fontSize: 10,
+    fontSize: 8,
     color: WHITE_COLOR,
+  },
+  profileButton: {
+    padding: 2,
+  },
+  profileCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.4)',
+    overflow: 'hidden',
+    backgroundColor: WHITE_COLOR,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
   },
 
   // ===== BALANCE CARD =====
-  balanceCardContainer: {
-    paddingHorizontal: HORIZONTAL_MARGIN,
-    marginTop: 10,
-    zIndex: 10,
+  balanceCardWrapper: {
+    marginHorizontal: HORIZONTAL_MARGIN,
+    marginTop: 12,
+    zIndex: 20,
   },
-  balanceCard: isDarkMode => ({
-    borderRadius: 20,
-    backgroundColor: isDarkMode ? '#1a2332' : WHITE_BACKGROUND,
-    ...SHADOWS.large,
+  mainBalanceCard: {
+    borderRadius: 28,
+    padding: 24,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: isDarkMode ? '#2d3748' : '#f1f5f9',
-  }),
-  balanceCardInner: {
-    padding: 16,
   },
-  cardHeaderRow: {
+  cardInfoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  balanceLabel: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
-    fontSize: 12,
-    color: isDarkMode ? '#94a3b8' : '#64748b',
-    marginBottom: 2,
-  }),
-  balanceAmountRow: {
-    flexDirection: 'row',
     alignItems: 'center',
   },
-  balanceAmount: isDarkMode => ({
-    fontFamily: BOLD_FONT,
-    fontSize: 20,
-    color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
-  }),
-  eyeButton: {
-    padding: 4,
-    marginLeft: 4,
-  },
-  pointSection: {
-    alignItems: 'flex-end',
-  },
-  pointLabel: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
-    fontSize: 11,
-    color: isDarkMode ? '#94a3b8' : '#64748b',
-    marginBottom: 2,
-  }),
-  pointRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  pointValue: {
-    fontFamily: BOLD_FONT,
-    fontSize: 14,
-    color: '#f97316',
-  },
-  pointTukarText: {
-    fontFamily: BOLD_FONT,
-    fontSize: 10,
-    color: '#f97316',
-    backgroundColor: 'rgba(249, 115, 22, 0.1)',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  cardDivider: isDarkMode => ({
-    height: 1,
-    backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : '#f1f5f9',
-    marginVertical: 12,
-  }),
-  cardActionRow: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  actionButton: {
+  balanceMain: {
     flex: 1,
+  },
+  cardLabel: {
+    fontFamily: MEDIUM_FONT,
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.7)',
+    marginBottom: 6,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  amountRow: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  mainAmountText: {
+    fontFamily: BOLD_FONT,
+    fontSize: 32,
+    color: WHITE_COLOR,
+  },
+  visibilityToggle: {
+    padding: 4,
+  },
+  pointsFloatingBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: WHITE_COLOR,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    gap: 4,
+    flexShrink: 0,
+  },
+  pointsCount: {
+    fontFamily: BOLD_FONT,
+    fontSize: 12,
+    color: '#f97316',
+  },
+  pointsArrow: {
+    marginLeft: 2,
+  },
+  actionGridContainer: {
+    marginTop: 24,
+    backgroundColor: 'rgba(0,0,0,0.12)',
+    borderRadius: 20,
+    padding: 14,
+  },
+  actionGridInner: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  gridBtn: {
+    alignItems: 'center',
+    width: '22%',
+  },
+  gridBtnIcon: {
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    backgroundColor: WHITE_COLOR,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
-    borderRadius: 12,
+    marginBottom: 8,
   },
-  transferButton: isDarkMode => ({
-    backgroundColor: isDarkMode ? 'rgba(14, 165, 233, 0.1)' : '#f0f9ff',
-    borderWidth: 1,
-    borderColor: isDarkMode ? 'rgba(14, 165, 233, 0.2)' : '#e0f2fe',
-  }),
-  transferButtonText: isDarkMode => ({
+  gridBtnLabel: {
     fontFamily: BOLD_FONT,
-    fontSize: 12,
-    color: isDarkMode ? '#38bdf8' : BLUE_COLOR,
-    marginLeft: 6,
-  }),
-  topupButton: {
-    backgroundColor: BLUE_COLOR,
-  },
-  topupButtonText: {
-    fontFamily: BOLD_FONT,
-    fontSize: 12,
+    fontSize: 11,
     color: WHITE_COLOR,
   },
 
   // ===== SERVICES GRID =====
   servicesCard: isDarkMode => ({
     marginHorizontal: HORIZONTAL_MARGIN,
-    marginTop: SPACING.lg,
+    marginTop: SPACING.xxl,
     backgroundColor: isDarkMode ? '#1a2332' : WHITE_BACKGROUND,
-    borderRadius: BORDER_RADIUS.large,
+    borderRadius: 24,
   }),
   servicesCardInner: {
     padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.large,
+    borderRadius: 24,
     overflow: 'hidden',
   },
   servicesGrid: {
@@ -665,17 +755,16 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
   },
   serviceIconBox: {
-    width: 52,
-    height: 52,
-    borderRadius: BORDER_RADIUS.medium,
+    width: 56,
+    height: 56,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: SPACING.xs + 2,
-    overflow: 'hidden',
+    marginBottom: 10,
   },
   serviceIcon: {
-    width: 26,
-    height: 26,
+    width: 28,
+    height: 28,
   },
   serviceLabel: isDarkMode => ({
     fontFamily: MEDIUM_FONT,
@@ -683,6 +772,7 @@ const styles = StyleSheet.create({
     color: isDarkMode ? '#cbd5e1' : '#334155',
     textAlign: 'center',
     lineHeight: 14,
+    paddingHorizontal: 4,
   }),
 
   // ===== SECTION HEADER =====
@@ -691,16 +781,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: HORIZONTAL_MARGIN,
-    marginTop: SPACING.xxl,
-    marginBottom: SPACING.md,
+    marginTop: 40,
+    marginBottom: 16,
   },
   sectionTitle: isDarkMode => ({
     fontFamily: BOLD_FONT,
-    fontSize: 17,
-    color: isDarkMode ? DARK_COLOR : LIGHT_COLOR,
+    fontSize: 18,
+    color: isDarkMode ? DARK_COLOR : '#0f172a',
   }),
   seeAll: {
-    fontFamily: MEDIUM_FONT,
+    fontFamily: BOLD_FONT,
     fontSize: 13,
     color: BLUE_COLOR,
   },
@@ -708,62 +798,62 @@ const styles = StyleSheet.create({
   // ===== PROMO CARDS =====
   promoImage: {
     width: '100%',
-    height: 160,
-    borderRadius: 16,
-    backgroundColor: '#e2e8f0',
+    height: 180,
+    borderRadius: 24,
+    backgroundColor: '#f1f5f9',
     overflow: 'hidden',
   },
   dotsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: SPACING.md,
+    marginTop: 20,
   },
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#d1d5db',
-    marginHorizontal: 3,
+    backgroundColor: '#cbd5e1',
+    marginHorizontal: 4,
   },
   activeDot: {
     backgroundColor: BLUE_COLOR,
-    width: 20,
+    width: 24,
   },
 
-  // ===== RECENT ACTIVITY (matches Transaksi page) =====
+  // ===== RECENT ACTIVITY =====
   activitiesList: {
     paddingHorizontal: HORIZONTAL_MARGIN,
-    gap: 12,
+    gap: 14,
   },
   activityCard: isDarkMode => ({
     backgroundColor: isDarkMode ? '#1e293b' : WHITE_COLOR,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: isDarkMode ? '#334155' : '#f1f5f9',
   }),
   activityCardInner: {
-    padding: 16,
-    borderRadius: 16,
+    padding: 18,
+    borderRadius: 20,
     overflow: 'hidden',
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 14,
   },
   cardType: isDarkMode => ({
     fontSize: 12,
-    fontFamily: MEDIUM_FONT,
+    fontFamily: BOLD_FONT,
     color: isDarkMode ? '#94a3b8' : '#64748b',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   }),
   statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-    minWidth: 70,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+    minWidth: 80,
     alignItems: 'center',
   },
   statusText: {
@@ -777,31 +867,34 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   cardTujuan: isDarkMode => ({
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: BOLD_FONT,
-    color: isDarkMode ? WHITE_COLOR : LIGHT_COLOR,
-    marginBottom: 4,
+    color: isDarkMode ? WHITE_COLOR : '#0f172a',
+    marginBottom: 6,
   }),
   cardDate: isDarkMode => ({
     fontSize: 12,
     fontFamily: REGULAR_FONT,
-    color: isDarkMode ? '#94a3b8' : SLATE_COLOR,
+    color: isDarkMode ? '#94a3b8' : '#64748b',
   }),
   cardPrice: isDarkMode => ({
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: BOLD_FONT,
-    color: isDarkMode ? WHITE_COLOR : DARK_COLOR,
+    color: isDarkMode ? WHITE_COLOR : BLUE_COLOR,
   }),
   emptyActivity: isDarkMode => ({
     alignItems: 'center',
-    padding: SPACING.xxxl,
-    backgroundColor: isDarkMode ? '#1a2332' : WHITE_BACKGROUND,
-    borderRadius: BORDER_RADIUS.medium,
-    ...SHADOWS.small,
+    padding: 40,
+    backgroundColor: isDarkMode ? '#1a2332' : '#f8fafc',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: isDarkMode ? '#334155' : '#cbd5e1',
   }),
   emptyText: isDarkMode => ({
-    fontFamily: REGULAR_FONT,
+    fontFamily: MEDIUM_FONT,
     fontSize: 14,
-    color: isDarkMode ? SLATE_COLOR : '#64748b',
+    color: isDarkMode ? '#64748b' : '#94a3b8',
+    marginTop: 8,
   }),
 });
